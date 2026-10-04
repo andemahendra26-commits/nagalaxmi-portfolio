@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Sparkles,
   Heart,
@@ -24,7 +24,7 @@ import {
   MessageCircle,
   Trophy,
   RotateCcw,
-  Play
+  Sparkle
 } from "lucide-react";
 
 function LinkedinIcon({ size = 18 }) {
@@ -33,6 +33,23 @@ function LinkedinIcon({ size = 18 }) {
       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64c-.88 0-1.6.72-1.6 1.6s.72 1.6 1.6 1.6 1.6-.72 1.6-1.6-.72-1.6-1.6-1.6Z" />
     </svg>
   );
+}
+
+// 8 Celebration Pairs
+const CELEBRATION_PAIRS = ["🎂", "🌸", "💍", "🎆", "🎤", "🎈", "☕", "🎁"];
+
+function createShuffledDeck() {
+  const deck = [...CELEBRATION_PAIRS, ...CELEBRATION_PAIRS].map((emoji, index) => ({
+    id: index,
+    emoji,
+    matched: false
+  }));
+  // Fisher-Yates shuffle
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
 }
 
 export default function App() {
@@ -50,22 +67,32 @@ export default function App() {
     "Music Playlist & Speaker Coordination"
   ]);
 
-  /* ── PARTY RUSH MINI-GAME STATE ── */
-  const [gameState, setGameState] = useState("idle"); // 'idle' | 'playing' | 'gameover'
-  const [gameScore, setGameScore] = useState(0);
-  const [highScore, setHighScore] = useState(() => {
-    try {
-      return Number(localStorage.getItem("gn_party_high_score")) || 0;
-    } catch {
-      return 0;
-    }
-  });
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [basketX, setBasketX] = useState(50); // percentage 0 - 100
-  const [fallingItems, setFallingItems] = useState([]);
-  const gameAreaRef = useRef(null);
-  const gameIntervalRef = useRef(null);
-  const timerIntervalRef = useRef(null);
+  /* ── 3D CELEBRATION MEMORY MATCH GAME STATE ── */
+  const [deck, setDeck] = useState(createShuffledDeck);
+  const [flipped, setFlipped] = useState([]);
+  const [moves, setMoves] = useState(0);
+  const [matchedPairs, setMatchedPairs] = useState(0);
+  const [gameTime, setGameTime] = useState(0);
+  const [isGameRunning, setIsGameRunning] = useState(false);
+  const [isWon, setIsWon] = useState(false);
+  const timerRef = useRef(null);
+
+  /* ── 3D TILT HANDLERS FOR CARDS ── */
+  const handle3DTilt = useCallback((e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+  }, []);
+
+  const reset3DTilt = useCallback((e) => {
+    e.currentTarget.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+  }, []);
 
   /* ── SCROLL PROGRESS & SCROLL SPY ── */
   useEffect(() => {
@@ -94,7 +121,7 @@ export default function App() {
         });
       },
       {
-        threshold: 0.12,
+        threshold: 0.1,
         rootMargin: "0px 0px -40px 0px"
       }
     );
@@ -121,7 +148,7 @@ export default function App() {
     };
   }, []);
 
-  /* ── FLOATING FESTIVE SPARKS CANVAS ── */
+  /* ── FLOATING FESTIVE SPARKS CANVAS (LIGHTWEIGHT 60 FPS) ── */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -140,14 +167,14 @@ export default function App() {
     const particles = [];
     const colors = ["#ff9f1c", "#ffbf69", "#ff758f", "#f4b251", "#ffffff"];
 
-    for (let i = 0; i < 45; i++) {
+    for (let i = 0; i < 35; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
         r: Math.random() * 2 + 1,
         color: colors[Math.floor(Math.random() * colors.length)],
-        speedY: Math.random() * 0.5 + 0.15,
-        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: Math.random() * 0.4 + 0.1,
+        speedX: (Math.random() - 0.5) * 0.2,
         alpha: Math.random() * 0.5 + 0.2
       });
     }
@@ -183,110 +210,65 @@ export default function App() {
     };
   }, []);
 
-  /* ── MINI-GAME ENGINE (NO AUDIO) ── */
-  const itemIcons = [
-    { emoji: "🎂", pts: 10 },
-    { emoji: "🌸", pts: 10 },
-    { emoji: "🎈", pts: 10 },
-    { emoji: "🎤", pts: 15 },
-    { emoji: "🎁", pts: 20 },
-    { emoji: "🌧️", pts: -15 }
-  ];
-
-  const startGame = () => {
-    setGameState("playing");
-    setGameScore(0);
-    setTimeLeft(30);
-    setBasketX(50);
-    setFallingItems([]);
+  /* ── MEMORY MATCH GAME LOGIC (ZERO LAG, NO AUDIO) ── */
+  const startMemoryGame = () => {
+    setDeck(createShuffledDeck());
+    setFlipped([]);
+    setMoves(0);
+    setMatchedPairs(0);
+    setGameTime(0);
+    setIsWon(false);
+    setIsGameRunning(true);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setGameTime((t) => t + 1);
+    }, 1000);
   };
 
   useEffect(() => {
-    if (gameState !== "playing") return;
-
-    // Timer countdown
-    timerIntervalRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerIntervalRef.current);
-          clearInterval(gameIntervalRef.current);
-          setGameState("gameover");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    // Falling items spawner & physics
-    let itemId = 0;
-    gameIntervalRef.current = setInterval(() => {
-      setFallingItems((prev) => {
-        // Spawn chance
-        let updated = [...prev];
-        if (Math.random() > 0.35) {
-          const type = itemIcons[Math.floor(Math.random() * itemIcons.length)];
-          updated.push({
-            id: itemId++,
-            x: Math.floor(Math.random() * 85) + 5,
-            y: 0,
-            emoji: type.emoji,
-            pts: type.pts,
-            speed: Math.random() * 2 + 3.5
-          });
-        }
-
-        // Update positions and check collisions with basket
-        const filtered = [];
-        updated.forEach((item) => {
-          item.y += item.speed;
-
-          // Check if caught in basket (bottom area: y between 80% and 92%)
-          if (item.y >= 80 && item.y <= 92) {
-            const distance = Math.abs(item.x - basketX);
-            if (distance < 14) {
-              // CAUGHT!
-              setGameScore((s) => {
-                const nextScore = Math.max(0, s + item.pts);
-                if (nextScore > highScore) {
-                  setHighScore(nextScore);
-                  try {
-                    localStorage.setItem("gn_party_high_score", nextScore);
-                  } catch (e) {}
-                }
-                return nextScore;
-              });
-              return; // remove caught item
-            }
-          }
-
-          if (item.y < 100) {
-            filtered.push(item);
-          }
-        });
-
-        return filtered;
-      });
-    }, 50);
-
     return () => {
-      clearInterval(timerIntervalRef.current);
-      clearInterval(gameIntervalRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [gameState, basketX, highScore]);
+  }, []);
 
-  // Mouse & Touch movement inside game area
-  const handleGameMouseMove = (e) => {
-    if (gameState !== "playing" || !gameAreaRef.current) return;
-    const rect = gameAreaRef.current.getBoundingClientRect();
-    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-    if (!clientX) return;
-    const xPos = ((clientX - rect.left) / rect.width) * 100;
-    setBasketX(Math.max(8, Math.min(92, xPos)));
-  };
+  const handleCardClick = (index) => {
+    if (!isGameRunning || isWon) return;
+    if (flipped.length === 2) return; // wait for flip back
+    if (flipped.includes(index) || deck[index].matched) return; // already flipped or matched
 
-  const moveBasketStep = (direction) => {
-    if (gameState !== "playing") return;
-    setBasketX((prev) => (direction === "left" ? Math.max(8, prev - 12) : Math.min(92, prev + 12)));
+    const newFlipped = [...flipped, index];
+    setFlipped(newFlipped);
+
+    if (newFlipped.length === 2) {
+      setMoves((m) => m + 1);
+      const [firstIdx, secondIdx] = newFlipped;
+
+      if (deck[firstIdx].emoji === deck[secondIdx].emoji) {
+        // MATCH!
+        setTimeout(() => {
+          setDeck((prevDeck) =>
+            prevDeck.map((card, i) =>
+              i === firstIdx || i === secondIdx ? { ...card, matched: true } : card
+            )
+          );
+          setFlipped([]);
+          setMatchedPairs((pairs) => {
+            const next = pairs + 1;
+            if (next === 8) {
+              setIsWon(true);
+              setIsGameRunning(false);
+              if (timerRef.current) clearInterval(timerRef.current);
+            }
+            return next;
+          });
+        }, 300);
+      } else {
+        // NO MATCH -> flip back smoothly
+        setTimeout(() => {
+          setFlipped([]);
+        }, 850);
+      }
+    }
   };
 
   const toggleService = (srv) => {
@@ -306,7 +288,7 @@ export default function App() {
 
   const generateGameClaimMessage = () => {
     const text = encodeURIComponent(
-      `Hi Nagalakshmi! I played your Party Rush game on your website and scored ${gameScore} points! 🎉 Can I claim a celebration discount for my upcoming event?`
+      `Hi Nagalakshmi! I played your 3D Celebration Memory game on your website and matched all 8 celebration pairs in ${moves} moves (${gameTime}s)! 🎉 Can I claim a special celebration discount for my upcoming event?`
     );
     return `https://wa.me/917396186269?text=${text}`;
   };
@@ -380,7 +362,7 @@ export default function App() {
                   href="#game"
                   className={activeSection === "game" ? "active" : ""}
                 >
-                  Party Rush Game 🎮
+                  3D Memory Game 🎮
                 </a>
               </li>
               <li>
@@ -458,7 +440,7 @@ export default function App() {
             className={`mobile-nav-link ${activeSection === "game" ? "active" : ""}`}
             onClick={() => setMobileMenuOpen(false)}
           >
-            <span>Party Rush Mini-Game 🎮</span>
+            <span>3D Memory Game 🎮</span>
             <ChevronRight size={16} />
           </a>
           <a
@@ -533,7 +515,7 @@ export default function App() {
                   <span>Customize Your Celebration</span>
                 </a>
                 <a href="#game" className="btn-secondary-cozy">
-                  <span>🎮 Play Party Rush Game</span>
+                  <span>🎮 Play 3D Match Game</span>
                   <ChevronRight size={14} />
                 </a>
               </div>
@@ -554,21 +536,35 @@ export default function App() {
               </div>
             </div>
 
-            {/* Profile & Event Picture Preview Card */}
-            <div className="hero-card-preview reveal-right">
-              <div className="hero-img-wrap">
-                <img
-                  src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=85"
-                  alt="Intimate Celebration Gathering"
-                />
-              </div>
-
-              <div className="hero-card-meta">
-                <div>
-                  <h3 className="card-event-name">Gurajala Nagalakshmi</h3>
-                  <span className="card-event-loc">Hyderabad, Telangana · Open for Bookings</span>
+            {/* Profile & Event Picture Preview Card with 3D Tilt */}
+            <div className="perspective-wrap reveal-right">
+              <div
+                className="hero-card-preview tilt-card-3d"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
+                {/* 3D Floating Badges */}
+                <div className="floating-3d-badge top-right">
+                  <span>🌸 Floral Magic</span>
                 </div>
-                <span className="card-event-badge">Ready To Plan</span>
+                <div className="floating-3d-badge bottom-left">
+                  <span>✨ 100% Stress-Free</span>
+                </div>
+
+                <div className="hero-img-wrap tilt-layer-1">
+                  <img
+                    src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=85"
+                    alt="Intimate Celebration Gathering"
+                  />
+                </div>
+
+                <div className="hero-card-meta tilt-layer-2">
+                  <div>
+                    <h3 className="card-event-name">Gurajala Nagalakshmi</h3>
+                    <span className="card-event-loc">Hyderabad, Telangana · Open for Bookings</span>
+                  </div>
+                  <span className="card-event-badge">Ready To Plan</span>
+                </div>
               </div>
             </div>
           </div>
@@ -619,37 +615,59 @@ export default function App() {
 
             <div className="haldi-grid">
               <div className="haldi-feature-list">
-                <div className="haldi-card reveal-left delay-1">
-                  <h3>Marigold &amp; Floral Photobooth Backdrops</h3>
-                  <p>
-                    Traditional genda phool arches, brass urli with floating petals,
-                    and personalized name hangings that make every photo Instagram-worthy.
-                  </p>
+                <div
+                  className="haldi-card tilt-card-3d reveal-left delay-1"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tilt-layer-1">
+                    <h3>Marigold &amp; Floral Photobooth Backdrops</h3>
+                    <p>
+                      Traditional genda phool arches, brass urli with floating petals,
+                      and personalized name hangings that make every photo Instagram-worthy.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="haldi-card reveal-left delay-2">
-                  <h3>Ritual Timing &amp; Pooja Thali Prep</h3>
-                  <p>
-                    Ensuring all ritual items, haldi paste, fresh flowers, and sweets
-                    are ready so the family doesn&apos;t scramble at the muhurtham moment.
-                  </p>
+                <div
+                  className="haldi-card tilt-card-3d reveal-left delay-2"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tilt-layer-1">
+                    <h3>Ritual Timing &amp; Pooja Thali Prep</h3>
+                    <p>
+                      Ensuring all ritual items, haldi paste, fresh flowers, and sweets
+                      are ready so the family doesn&apos;t scramble at the muhurtham moment.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="haldi-card reveal-left delay-3">
-                  <h3>Sangeet Playlists &amp; Dholak Rhythm</h3>
-                  <p>
-                    Sound system setup, microphone handoffs, and energetic playlist management
-                    for aunts, cousins, and friends ready to dance.
-                  </p>
+                <div
+                  className="haldi-card tilt-card-3d reveal-left delay-3"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tilt-layer-1">
+                    <h3>Sangeet Playlists &amp; Dholak Rhythm</h3>
+                    <p>
+                      Sound system setup, microphone handoffs, and energetic playlist management
+                      for aunts, cousins, and friends ready to dance.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="haldi-image-box reveal-right delay-2">
+              <div
+                className="haldi-image-box tilt-card-3d reveal-right delay-2"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
                 <img
                   src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=85"
                   alt="Haldi Ceremony Moments"
                 />
-                <div className="haldi-image-overlay">
+                <div className="haldi-image-overlay tilt-layer-2">
                   INTIMATE HALDI &amp; MEHENDI MOMENTS (50 — 250 GUESTS)
                 </div>
               </div>
@@ -680,37 +698,55 @@ export default function App() {
             </div>
 
             <div className="birthday-cards-grid">
-              <div className="birthday-card reveal-scale delay-1">
-                <div className="birthday-card-icon">
-                  <Cake size={22} />
+              <div
+                className="birthday-card tilt-card-3d reveal-scale delay-1"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
+                <div className="birthday-card-icon tilt-layer-2">
+                  <Cake size={24} />
                 </div>
-                <h3>Theme Cakes &amp; Dessert Tables</h3>
-                <p>
-                  Coordinating bakery deliveries, customized cake toppers, dessert table
-                  display stands, and cold spark candles for the big countdown.
-                </p>
+                <div className="tilt-layer-1">
+                  <h3>Theme Cakes &amp; Dessert Tables</h3>
+                  <p>
+                    Coordinating bakery deliveries, customized cake toppers, dessert table
+                    display stands, and cold spark candles for the big countdown.
+                  </p>
+                </div>
               </div>
 
-              <div className="birthday-card reveal-scale delay-2">
-                <div className="birthday-card-icon">
-                  <PartyPopper size={22} />
+              <div
+                className="birthday-card tilt-card-3d reveal-scale delay-2"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
+                <div className="birthday-card-icon tilt-layer-2">
+                  <PartyPopper size={24} />
                 </div>
-                <h3>Balloon Garlands &amp; Neon Signage</h3>
-                <p>
-                  Trendy pastel balloon arches, glowing neon custom name signs,
-                  and selfie photobooths with fun party props.
-                </p>
+                <div className="tilt-layer-1">
+                  <h3>Balloon Garlands &amp; Neon Signage</h3>
+                  <p>
+                    Trendy pastel balloon arches, glowing neon custom name signs,
+                    and selfie photobooths with fun party props.
+                  </p>
+                </div>
               </div>
 
-              <div className="birthday-card reveal-scale delay-3">
-                <div className="birthday-card-icon">
-                  <Gift size={22} />
+              <div
+                className="birthday-card tilt-card-3d reveal-scale delay-3"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
+                <div className="birthday-card-icon tilt-layer-2">
+                  <Gift size={24} />
                 </div>
-                <h3>Party Games, Music &amp; Return Favors</h3>
-                <p>
-                  Interactive hosting for party games, speaker setup with favorite tracks,
-                  and neatly arranged return gift hampers.
-                </p>
+                <div className="tilt-layer-1">
+                  <h3>Party Games, Music &amp; Return Favors</h3>
+                  <p>
+                    Interactive hosting for party games, speaker setup with favorite tracks,
+                    and neatly arranged return gift hampers.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -734,7 +770,11 @@ export default function App() {
             </div>
 
             <div className="engagement-split">
-              <div className="engagement-img-container reveal-left">
+              <div
+                className="engagement-img-container tilt-card-3d reveal-left"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
                 <img
                   src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=85"
                   alt="Engagement Ceremony Decor"
@@ -742,7 +782,11 @@ export default function App() {
               </div>
 
               <div className="engagement-check-items">
-                <div className="engagement-item reveal-right delay-1">
+                <div
+                  className="engagement-item tilt-card-3d reveal-right delay-1"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
                   <Check size={20} color="#5fe0d5" />
                   <div>
                     <h4>Welcome Easel Boards &amp; Candlelit Aisles</h4>
@@ -752,7 +796,11 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="engagement-item reveal-right delay-2">
+                <div
+                  className="engagement-item tilt-card-3d reveal-right delay-2"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
                   <Check size={20} color="#5fe0d5" />
                   <div>
                     <h4>Ring Ceremony &amp; Rose Petal Cues</h4>
@@ -762,7 +810,11 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="engagement-item reveal-right delay-3">
+                <div
+                  className="engagement-item tilt-card-3d reveal-right delay-3"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
                   <Check size={20} color="#5fe0d5" />
                   <div>
                     <h4>Banquet &amp; Caterer Flow Management</h4>
@@ -793,8 +845,12 @@ export default function App() {
               </h2>
             </div>
 
-            <div className="college-highlight-box reveal-scale">
-              <div className="college-details">
+            <div
+              className="college-highlight-box tilt-card-3d reveal-scale"
+              onMouseMove={handle3DTilt}
+              onMouseLeave={reset3DTilt}
+            >
+              <div className="college-details tilt-layer-1">
                 <h3>Campus Fest Lead Organizer</h3>
                 <p>
                   During my B.Tech at Siddhartha Institute of Engineering &amp; Technology,
@@ -810,23 +866,24 @@ export default function App() {
                 </div>
               </div>
 
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: "center" }} className="tilt-layer-2">
                 <div
                   style={{
-                    background: "rgba(255, 159, 28, 0.1)",
-                    border: "1px solid rgba(255, 159, 28, 0.3)",
-                    borderRadius: "16px",
-                    padding: "24px"
+                    background: "rgba(255, 159, 28, 0.12)",
+                    border: "1.5px solid rgba(255, 159, 28, 0.35)",
+                    borderRadius: "18px",
+                    padding: "26px",
+                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)"
                   }}
                 >
-                  <span style={{ fontSize: 36, fontWeight: 800, color: "#f39c12", display: "block" }}>
+                  <span style={{ fontSize: 38, fontWeight: 800, color: "#f39c12", display: "block" }}>
                     B.Tech
                   </span>
-                  <span style={{ fontSize: 13, color: "#fff", fontWeight: 600 }}>
+                  <span style={{ fontSize: 14, color: "#fff", fontWeight: 700 }}>
                     Electronics &amp; Communication
                   </span>
-                  <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 6 }}>
-                    Technical mindset applied to audio, electrical &amp; team management.
+                  <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
+                    Technical precision applied to audio signals, electrical load &amp; team timing.
                   </p>
                 </div>
               </div>
@@ -930,9 +987,13 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Summary Card */}
-                <div className="planner-summary-card">
-                  <div>
+                {/* Summary Card with 3D Tilt */}
+                <div
+                  className="planner-summary-card tilt-card-3d"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tilt-layer-1">
                     <h3 className="summary-title">{selectedEventType}</h3>
                     <p className="summary-subtitle">Personalized Event Plan with Nagalakshmi</p>
 
@@ -960,7 +1021,7 @@ export default function App() {
                     href={generateWhatsAppMessage()}
                     target="_blank"
                     rel="noreferrer"
-                    className="btn-primary-warm"
+                    className="btn-primary-warm tilt-layer-2"
                     style={{ width: "100%", justifyContent: "center" }}
                   >
                     <Send size={15} />
@@ -973,21 +1034,21 @@ export default function App() {
         </section>
 
         {/* ══════════════════════════════════════════════════
-           SECTION 6: PARTY RUSH MINI-GAME 🎮 (NO AUDIO)
+           SECTION 6: 3D CELEBRATION MEMORY MATCH GAME 🎮
         ══════════════════════════════════════════════════ */}
         <section id="game" className="section-game">
           <div className="page-container">
             <div className="reveal-init" style={{ textAlign: "center", maxWidth: 640, margin: "0 auto 30px" }}>
               <div className="hero-tag">
                 <Trophy size={13} color="#ff9f1c" />
-                <span>30-SECOND EVENT COORDINATOR CHALLENGE</span>
+                <span>3D CELEBRATION MEMORY GAME</span>
               </div>
               <h2 className="section-title" style={{ fontSize: "clamp(30px, 3.8vw, 48px)" }}>
-                Party Rush: <span style={{ color: "var(--primary-gold)" }}>Catch The Items!</span>
+                Match The <span style={{ color: "var(--primary-gold)" }}>Celebration Pairs!</span>
               </h2>
               <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
-                Move the golden party tray to catch the cakes 🎂, flowers 🌸, and gifts 🎁.
-                Avoid the rain clouds 🌧️! Score 75+ to unlock a special event discount!
+                Tap cards to flip them in 3D and find all 8 matching celebration items.
+                Match them all to claim a special 10% discount on your next event!
               </p>
             </div>
 
@@ -995,127 +1056,96 @@ export default function App() {
               {/* HUD */}
               <div className="game-hud-bar">
                 <div className="game-stat-item">
-                  <span className="game-stat-label">TIME REMAINING</span>
-                  <span className="game-stat-value">{timeLeft}s</span>
+                  <span className="game-stat-label">TIME</span>
+                  <span className="game-stat-value">{gameTime}s</span>
                 </div>
                 <div className="game-stat-item" style={{ alignItems: "center" }}>
-                  <span className="game-stat-label">SCORE</span>
+                  <span className="game-stat-label">MOVES</span>
                   <span className="game-stat-value" style={{ color: "#ffbf69" }}>
-                    {gameScore}
+                    {moves}
                   </span>
                 </div>
                 <div className="game-stat-item" style={{ alignItems: "flex-end" }}>
-                  <span className="game-stat-label">HIGH SCORE</span>
+                  <span className="game-stat-label">PAIRS MATCHED</span>
                   <span className="game-stat-value" style={{ color: "#5fe0d5" }}>
-                    {highScore}
+                    {matchedPairs} / 8
                   </span>
                 </div>
               </div>
 
-              {/* Game Interactive Area */}
-              <div
-                className="game-screen-area"
-                ref={gameAreaRef}
-                onMouseMove={handleGameMouseMove}
-                onTouchMove={handleGameMouseMove}
-              >
-                {/* Idle / Start Overlay */}
-                {gameState === "idle" && (
-                  <div className="game-overlay-screen">
-                    <PartyPopper size={48} color="var(--primary-gold)" style={{ marginBottom: 12 }} />
-                    <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "#fff", marginBottom: 8 }}>
-                      Ready To Save The Party?
-                    </h3>
-                    <p style={{ color: "var(--text-muted)", fontSize: 14, maxWidth: 440, marginBottom: 24, lineHeight: 1.5 }}>
-                      Catch as many party essentials as you can in 30 seconds.
-                      Use your mouse, touch drag, or the buttons below!
-                    </p>
-                    <button onClick={startGame} className="btn-primary-warm" style={{ cursor: "pointer" }}>
-                      <Play size={16} />
-                      <span>Start 30-Second Rush</span>
-                    </button>
-                  </div>
-                )}
-
-                {/* Game Over Screen */}
-                {gameState === "gameover" && (
-                  <div className="game-overlay-screen">
-                    <Trophy size={48} color="var(--primary-gold)" style={{ marginBottom: 12 }} />
-                    <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "#fff", marginBottom: 4 }}>
-                      Time&apos;s Up! Final Score: {gameScore}
-                    </h3>
-                    <p style={{ color: "var(--primary-gold)", fontWeight: 700, fontSize: 16, marginBottom: 16 }}>
-                      {gameScore >= 120
-                        ? "🌟 MASTER EVENT COORDINATOR! You completely saved the party!"
-                        : gameScore >= 60
-                        ? "🎉 STAR EVENT ASSISTANT! Amazing reflexes!"
-                        : "☕ GOOD EFFORT! Practice makes perfect!"}
-                    </p>
-
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
-                      <button onClick={startGame} className="btn-secondary-cozy" style={{ cursor: "pointer" }}>
-                        <RotateCcw size={15} />
-                        <span>Play Again</span>
-                      </button>
-
-                      <a
-                        href={generateGameClaimMessage()}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-primary-warm"
-                      >
-                        <Gift size={15} />
-                        <span>Claim 10% Discount on WhatsApp</span>
-                      </a>
+              {/* 4x4 3D Grid */}
+              <div className="memory-grid-4x4">
+                {deck.map((card, index) => {
+                  const isFlipped = card.matched || flipped.includes(index);
+                  return (
+                    <div
+                      key={card.id}
+                      className={`memory-card-3d ${isFlipped ? "flipped" : ""}`}
+                      onClick={() => handleCardClick(index)}
+                    >
+                      <div className="memory-card-inner">
+                        {/* Facedown */}
+                        <div className="memory-card-face front-face">
+                          <span className="memory-card-logo">GN 🌸</span>
+                        </div>
+                        {/* Faceup */}
+                        <div className={`memory-card-face back-face ${card.matched ? "matched" : ""}`}>
+                          <span className="memory-card-emoji">{card.emoji}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })}
+              </div>
 
-                {/* Falling Party Items */}
-                {fallingItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="game-falling-item"
-                    style={{
-                      left: `${item.x}%`,
-                      top: `${item.y}%`,
-                      transform: "translate(-50%, -50%)"
-                    }}
-                  >
-                    {item.emoji}
-                  </div>
-                ))}
-
-                {/* Catcher Basket / Tray */}
-                <div
-                  className="game-catcher-basket"
-                  style={{
-                    left: `${basketX}%`,
-                    width: 90,
-                    transform: "translateX(-50%)"
-                  }}
+              {/* Start / Restart Button */}
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
+                <button
+                  onClick={startMemoryGame}
+                  className="btn-secondary-cozy"
+                  style={{ cursor: "pointer" }}
                 >
-                  🧺 PARTY TRAY
+                  <RotateCcw size={15} />
+                  <span>{isGameRunning ? "Restart Game" : "Start New Game"}</span>
+                </button>
+              </div>
+
+              {/* Win Modal Overlay */}
+              {isWon && (
+                <div className="memory-win-overlay">
+                  <Trophy size={48} color="var(--primary-gold)" style={{ marginBottom: 12 }} />
+                  <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 28, color: "#fff", marginBottom: 6 }}>
+                    All 8 Celebration Pairs Matched!
+                  </h3>
+                  <p style={{ color: "var(--primary-gold)", fontWeight: 700, fontSize: 16, marginBottom: 12 }}>
+                    {moves <= 16
+                      ? "🌟 MASTER EVENT COORDINATOR! (3 Stars)"
+                      : moves <= 24
+                      ? "🎉 STAR EVENT ASSISTANT! (2 Stars)"
+                      : "☕ EVENT READY! Finished in " + gameTime + "s!"}
+                  </p>
+                  <p style={{ color: "var(--text-muted)", fontSize: 13, maxWidth: 400, marginBottom: 20 }}>
+                    You completed the challenge in <strong>{moves} moves</strong> and <strong>{gameTime} seconds</strong>!
+                  </p>
+
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+                    <button onClick={startMemoryGame} className="btn-secondary-cozy" style={{ cursor: "pointer" }}>
+                      <RotateCcw size={15} />
+                      <span>Play Again</span>
+                    </button>
+
+                    <a
+                      href={generateGameClaimMessage()}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-primary-warm"
+                    >
+                      <Gift size={15} />
+                      <span>Claim 10% Discount on WhatsApp</span>
+                    </a>
+                  </div>
                 </div>
-              </div>
-
-              {/* Mobile Left / Right Buttons */}
-              <div className="game-controls-touch">
-                <button
-                  className="touch-btn"
-                  onClick={() => moveBasketStep("left")}
-                  aria-label="Move left"
-                >
-                  ⬅ Move Left
-                </button>
-                <button
-                  className="touch-btn"
-                  onClick={() => moveBasketStep("right")}
-                  aria-label="Move right"
-                >
-                  Move Right ➡
-                </button>
-              </div>
+              )}
             </div>
           </div>
         </section>
@@ -1138,9 +1168,13 @@ export default function App() {
             </div>
 
             <div className="timeline-list">
-              <div className="timeline-card reveal-left delay-1">
-                <div className="timeline-period">2026 — PRESENT</div>
-                <div>
+              <div
+                className="timeline-card tilt-card-3d reveal-left delay-1"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
+                <div className="timeline-period tilt-layer-1">2026 — PRESENT</div>
+                <div className="tilt-layer-2">
                   <h3 className="timeline-company-title">G Productions</h3>
                   <div className="timeline-role">Event Operations &amp; Execution Executive</div>
                   <p className="timeline-desc">
@@ -1155,9 +1189,13 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="timeline-card reveal-left delay-2">
-                <div className="timeline-period">FIELD EXPERIENCE</div>
-                <div>
+              <div
+                className="timeline-card tilt-card-3d reveal-left delay-2"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
+                <div className="timeline-period tilt-layer-1">FIELD EXPERIENCE</div>
+                <div className="tilt-layer-2">
                   <h3 className="timeline-company-title">Mahathi Events</h3>
                   <div className="timeline-role">Event Coordination &amp; Setup Assistant</div>
                   <p className="timeline-desc">
@@ -1172,9 +1210,13 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="timeline-card reveal-left delay-3">
-                <div className="timeline-period">FIELD EXPERIENCE</div>
-                <div>
+              <div
+                className="timeline-card tilt-card-3d reveal-left delay-3"
+                onMouseMove={handle3DTilt}
+                onMouseLeave={reset3DTilt}
+              >
+                <div className="timeline-period tilt-layer-1">FIELD EXPERIENCE</div>
+                <div className="tilt-layer-2">
                   <h3 className="timeline-company-title">Vaishnavi Events</h3>
                   <div className="timeline-role">Operations &amp; Floor Support</div>
                   <p className="timeline-desc">
