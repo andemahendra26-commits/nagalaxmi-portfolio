@@ -232,9 +232,16 @@ export default function App() {
   }, []);
 
   const handleCardClick = (index) => {
-    if (!isGameRunning || isWon) return;
+    if (isWon) return;
+    if (!isGameRunning) {
+      setIsGameRunning(true);
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = setInterval(() => {
+        setGameTime((t) => t + 1);
+      }, 1000);
+    }
     if (flipped.length === 2) return; // wait for flip back
-    if (flipped.includes(index) || deck[index].matched) return; // already flipped or matched
+    if (flipped.includes(index) || deck[index]?.matched) return; // already flipped or matched
 
     const newFlipped = [...flipped, index];
     setFlipped(newFlipped);
