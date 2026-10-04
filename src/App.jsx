@@ -24,7 +24,13 @@ import {
   MessageCircle,
   Trophy,
   RotateCcw,
-  Sparkle
+  Sparkle,
+  Gamepad2,
+  GraduationCap,
+  Briefcase,
+  Mic,
+  Megaphone,
+  Building2
 } from "lucide-react";
 
 function LinkedinIcon({ size = 18 }) {
@@ -35,21 +41,129 @@ function LinkedinIcon({ size = 18 }) {
   );
 }
 
-// 8 Celebration Pairs
-const CELEBRATION_PAIRS = ["🎂", "🌸", "💍", "🎆", "🎤", "🎈", "☕", "🎁"];
+/* ── 8 CELEBRATION PAIRS WITH PURE VECTOR SVGS (NO EMOJIS) ── */
+const CELEBRATION_PAIRS = [
+  { key: "cake", name: "Party Cake", color: "#ffbe0b" },
+  { key: "flower", name: "Haldi Bloom", color: "#fb8500" },
+  { key: "ring", name: "Ring Ceremony", color: "#5fe0d5" },
+  { key: "sparkles", name: "Sparklers", color: "#ff70a6" },
+  { key: "mic", name: "Emcee Hosting", color: "#b5179e" },
+  { key: "party", name: "Party Confetti", color: "#f72585" },
+  { key: "coffee", name: "Warm Chai", color: "#e09f3e" },
+  { key: "gift", name: "Return Favors", color: "#06d6a0" }
+];
+
+function renderCelebrationSvg(key, size = 30) {
+  switch (key) {
+    case "cake":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#ffbe0b" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8" />
+          <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1" />
+          <path d="M2 21h20" />
+          <path d="M7 8v2" />
+          <path d="M12 8v2" />
+          <path d="M17 8v2" />
+          <circle cx="7" cy="4" r="1" fill="#ffbe0b" />
+          <circle cx="12" cy="4" r="1" fill="#ffbe0b" />
+          <circle cx="17" cy="4" r="1" fill="#ffbe0b" />
+        </svg>
+      );
+    case "flower":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#fb8500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <circle cx="12" cy="12" r="3" fill="#fb8500" fillOpacity="0.4" />
+          <path d="M12 3a3.5 3.5 0 0 0-3.5 3.5c0 2.5 3.5 5.5 3.5 5.5s3.5-3 3.5-5.5A3.5 3.5 0 0 0 12 3Z" fill="#fb8500" fillOpacity="0.2" />
+          <path d="M12 21a3.5 3.5 0 0 0 3.5-3.5c0-2.5-3.5-5.5-3.5-5.5s-3.5 3-3.5 5.5A3.5 3.5 0 0 0 12 21Z" fill="#fb8500" fillOpacity="0.2" />
+          <path d="M3 12a3.5 3.5 0 0 0 3.5 3.5c2.5 0 5.5-3.5 5.5-3.5s-3-3.5-5.5-3.5A3.5 3.5 0 0 0 3 12Z" fill="#fb8500" fillOpacity="0.2" />
+          <path d="M21 12a3.5 3.5 0 0 0-3.5-3.5c-2.5 0-5.5 3.5-5.5 3.5s3 3.5 5.5 3.5A3.5 3.5 0 0 0 21 12Z" fill="#fb8500" fillOpacity="0.2" />
+        </svg>
+      );
+    case "ring":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#5fe0d5" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <circle cx="12" cy="14" r="7" />
+          <polygon points="12,2 15,6 9,6" fill="#5fe0d5" fillOpacity="0.35" stroke="#5fe0d5" strokeWidth="1.8" />
+          <path d="M8.5 6 12 10.5 15.5 6" />
+        </svg>
+      );
+    case "sparkles":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#ff70a6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <path d="m12 3-1.8 5.4a2 2 0 0 1-1.3 1.3L3.5 11.5l5.4 1.8a2 2 0 0 1 1.3 1.3L12 20l1.8-5.4a2 2 0 0 1 1.3-1.3l5.4-1.8-5.4-1.8a2 2 0 0 1-1.3-1.3Z" fill="#ff70a6" fillOpacity="0.3" />
+          <path d="M5 4v3" /><path d="M19 17v3" /><path d="M3.5 5.5h3" /><path d="M17.5 18.5h3" />
+        </svg>
+      );
+    case "mic":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#b5179e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <rect x="9" y="2" width="6" height="11" rx="3" fill="#b5179e" fillOpacity="0.25" />
+          <path d="M5 10a7 7 0 0 0 14 0" />
+          <line x1="12" y1="17" x2="12" y2="22" />
+          <line x1="8" y1="22" x2="16" y2="22" />
+        </svg>
+      );
+    case "party":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#f72585" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <path d="M5.8 11.3 2 22l10.7-3.79" />
+          <polygon points="5.8,11.3 12.7,18.2 2,22" fill="#f72585" fillOpacity="0.3" />
+          <circle cx="4" cy="3" r="1.5" fill="#f72585" />
+          <circle cx="21" cy="7" r="1.5" fill="#f72585" />
+          <circle cx="15" cy="2" r="1.5" fill="#f72585" />
+          <path d="M22 20h.01" /><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 2.5v0a2.9 2.9 0 0 1-2 2.76L13.5 8.8" />
+          <path d="m11 13 8.5-8.5" />
+        </svg>
+      );
+    case "coffee":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#e09f3e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+          <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" fill="#e09f3e" fillOpacity="0.25" />
+          <path d="M6 2c0 2 2 2 2 4" /><path d="M10 2c0 2 2 2 2 4" /><path d="M14 2c0 2 2 2 2 4" />
+        </svg>
+      );
+    case "gift":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#06d6a0" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="card-svg-icon">
+          <rect x="3" y="8" width="18" height="4" rx="1" fill="#06d6a0" fillOpacity="0.25" />
+          <path d="M12 8v13" />
+          <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" />
+          <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 4.8 0 0 1 12 8a4.8 4.8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" fill="#06d6a0" fillOpacity="0.3" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
+function CardBackMonogram({ size = 26 }) {
+  return (
+    <div className="card-back-vector">
+      <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="16" cy="16" r="14" stroke="var(--primary-gold)" strokeOpacity="0.35" strokeDasharray="3 2" />
+        <circle cx="16" cy="16" r="11" stroke="var(--primary-gold)" strokeOpacity="0.6" />
+        <path d="M16 6v3M16 23v3M6 16h3M23 16h3" stroke="var(--primary-gold)" strokeOpacity="0.5" />
+      </svg>
+      <span className="card-monogram-initials">GN</span>
+    </div>
+  );
+}
 
 function createShuffledDeck() {
-  const deck = [...CELEBRATION_PAIRS, ...CELEBRATION_PAIRS].map((emoji, index) => ({
+  const items = [...CELEBRATION_PAIRS, ...CELEBRATION_PAIRS].map((pair, index) => ({
     id: index,
-    emoji,
+    key: pair.key,
+    name: pair.name,
+    color: pair.color,
     matched: false
   }));
   // Fisher-Yates shuffle
-  for (let i = deck.length - 1; i > 0; i--) {
+  for (let i = items.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
+    [items[i], items[j]] = [items[j], items[i]];
   }
-  return deck;
+  return items;
 }
 
 export default function App() {
@@ -250,7 +364,7 @@ export default function App() {
       setMoves((m) => m + 1);
       const [firstIdx, secondIdx] = newFlipped;
 
-      if (deck[firstIdx].emoji === deck[secondIdx].emoji) {
+      if (deck[firstIdx].key === deck[secondIdx].key) {
         // MATCH!
         setTimeout(() => {
           setDeck((prevDeck) =>
@@ -368,8 +482,10 @@ export default function App() {
                 <a
                   href="#game"
                   className={activeSection === "game" ? "active" : ""}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
                 >
-                  3D Memory Game 🎮
+                  <span>3D Memory Game</span>
+                  <Gamepad2 size={14} />
                 </a>
               </li>
               <li>
@@ -447,7 +563,10 @@ export default function App() {
             className={`mobile-nav-link ${activeSection === "game" ? "active" : ""}`}
             onClick={() => setMobileMenuOpen(false)}
           >
-            <span>3D Memory Game 🎮</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              <Gamepad2 size={16} color="var(--primary-gold)" />
+              <span>3D Memory Game</span>
+            </span>
             <ChevronRight size={16} />
           </a>
           <a
@@ -492,7 +611,7 @@ export default function App() {
             <div className="reveal-left">
               <div className="hero-tag">
                 <Sparkles size={14} color="#ff9f1c" />
-                <span>HYDERABAD EVENT PLANNER &amp; COORDINATOR</span>
+                <span>EVENT OPERATIONS &amp; EXECUTION • HYDERABAD</span>
               </div>
 
               {/* PERSON'S NAME PROMINENTLY DISPLAYED */}
@@ -506,14 +625,12 @@ export default function App() {
               </div>
 
               <h2 className="hero-headline">
-                Making Every <span className="highlight">Intimate Celebration</span> Feel Warm, Magical &amp; Completely Stress-Free.
+                On-Ground Precision, Seamless Logistics &amp;<br />
+                <span className="highlight">Unforgettable Live Experiences.</span>
               </h2>
 
               <p className="hero-subtext">
-                I am a passionate, on-ground event coordinator helping families and friends
-                create unforgettable memories. Whether it&apos;s a vibrant <strong>Haldi &amp; Mehendi ceremony</strong>,
-                a joyful <strong>1st or 25th birthday bash</strong>, an intimate <strong>engagement celebration</strong>,
-                or a <strong>campus fest</strong> — I take care of the vendors, decor timing, music, and guest comfort so you can truly enjoy your special day.
+                Event Operations professional with hands-on expertise in <strong>event planning, on-ground execution, venue &amp; vendor coordination, and production support</strong> across corporate events, live concerts, weddings, conferences, exhibitions, press meets, and brand activations. Also experienced in <strong>social media management and event marketing</strong>.
               </p>
 
               <div className="hero-buttons">
@@ -521,8 +638,9 @@ export default function App() {
                   <Sparkles size={15} />
                   <span>Customize Your Celebration</span>
                 </a>
-                <a href="#game" className="btn-secondary-cozy">
-                  <span>🎮 Play 3D Match Game</span>
+                <a href="#college" className="btn-secondary-cozy">
+                  <GraduationCap size={15} />
+                  <span>View Experience Tree</span>
                   <ChevronRight size={14} />
                 </a>
               </div>
@@ -530,15 +648,19 @@ export default function App() {
               <div className="hero-trust-row">
                 <div className="trust-chip">
                   <Check size={13} color="var(--primary-gold)" />
-                  <span>Intimate Scale (30 — 300 Guests)</span>
+                  <span>Corporate Events &amp; Concerts</span>
                 </div>
                 <div className="trust-chip">
                   <Check size={13} color="var(--primary-gold)" />
-                  <span>Hands-On On-Ground Presence</span>
+                  <span>Weddings &amp; Brand Activations</span>
                 </div>
                 <div className="trust-chip">
                   <Check size={13} color="var(--primary-gold)" />
-                  <span>Budget-Friendly &amp; Detail Obsessed</span>
+                  <span>Venue, AV &amp; Vendor Management</span>
+                </div>
+                <div className="trust-chip">
+                  <Check size={13} color="var(--primary-gold)" />
+                  <span>Telugu (Native) • English • Hindi</span>
                 </div>
               </div>
             </div>
@@ -836,62 +958,202 @@ export default function App() {
         </section>
 
         {/* ══════════════════════════════════════════════════
-           CELEBRATION 4: COLLEGE FESTS & CAMPUS GATHERINGS
+           CELEBRATION 4: CAMPUS FESTS & CAREER EXPERIENCE TREE
         ══════════════════════════════════════════════════ */}
         <section id="college" className="section-college">
           <div className="page-container">
-            <div className="reveal-init">
-              <div className="section-label college">
+            <div className="reveal-init" style={{ textAlign: "center", maxWidth: 740, margin: "0 auto 40px" }}>
+              <div className="section-label college" style={{ margin: "0 auto 16px", display: "inline-flex" }}>
                 <Flame size={12} />
-                <span>CELEBRATION 04 // CAMPUS FESTS &amp; FAREWELLS</span>
+                <span>GROWTH TREE // FROM CAMPUS ROOTS TO SIGNATURE EVENTS</span>
               </div>
 
               <h2 className="section-title">
-                Youth Energy, Talent Shows &amp;<br />
-                <span style={{ color: "#f39c12", fontStyle: "italic" }}>Unforgettable College Memories.</span>
+                The Experience Tree &amp;<br />
+                <span style={{ color: "#f39c12", fontStyle: "italic" }}>Hands-On Event Journey.</span>
               </h2>
+              <p style={{ color: "var(--text-muted)", fontSize: 15, marginTop: 12 }}>
+                How technical engineering discipline evolved into campus leadership,
+                live wedding apprenticeships, operations management, and independent celebration design.
+              </p>
             </div>
 
-            <div
-              className="college-highlight-box tilt-card-3d reveal-scale"
-              onMouseMove={handle3DTilt}
-              onMouseLeave={reset3DTilt}
-            >
-              <div className="college-details tilt-layer-1">
-                <h3>Campus Fest Lead Organizer</h3>
-                <p>
-                  During my B.Tech at Siddhartha Institute of Engineering &amp; Technology,
-                  I headed technical and cultural festivals. From managing auditorium sound checks
-                  and anchoring schedules to handling flashmobs and crowd seating — this is where
-                  my passion for real-time event coordination began!
-                </p>
-                <div className="college-pills">
-                  <span className="college-pill">Department Fests</span>
-                  <span className="college-pill">Freshers &amp; Farewell Nights</span>
-                  <span className="college-pill">Stage Anchoring</span>
-                  <span className="college-pill">SIET Hyderabad</span>
+            {/* THE EXPERIENCE TREE */}
+            <div className="experience-tree-wrapper">
+              {/* Central Glowing Trunk */}
+              <div className="tree-trunk-line" />
+
+              {/* NODE 1: THE ROOT - B.TECH ECE */}
+              <div className="tree-branch-item left reveal-left delay-1">
+                <div
+                  className="tree-branch-card tilt-card-3d"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tree-branch-badge" style={{ color: "#f39c12", borderColor: "rgba(243, 156, 18, 0.45)" }}>
+                    <GraduationCap size={13} />
+                    <span>ROOT 01 // 2021 – 2025</span>
+                  </div>
+                  <h3 className="tree-branch-title">B.Tech – Electronics &amp; Communication</h3>
+                  <div className="tree-branch-sub">Siddhartha Institute of Engineering &amp; Technology (SIET), Hyderabad • CGPA: 7.2</div>
+                  <p className="tree-branch-desc">
+                    Engineering and technical foundation: precision management of audio signals, sound and AV systems, stage electrical power load distribution, and disciplined event timing.
+                  </p>
+                  <div className="tree-branch-tags">
+                    <span className="tree-tag">Sound &amp; AV Physics</span>
+                    <span className="tree-tag">Electrical Load Management</span>
+                    <span className="tree-tag">CGPA: 7.2</span>
+                    <span className="tree-tag">Technical Precision</span>
+                  </div>
+                </div>
+
+                <div className="tree-node-marker" title="Root 01: Academic Foundation">
+                  <GraduationCap size={20} color="#f39c12" />
                 </div>
               </div>
 
-              <div style={{ textAlign: "center" }} className="tilt-layer-2">
+              {/* NODE 2: BRANCH 02 - COLLEGE EVENT LEAD */}
+              <div className="tree-branch-item right reveal-right delay-2">
                 <div
-                  style={{
-                    background: "rgba(255, 159, 28, 0.12)",
-                    border: "1.5px solid rgba(255, 159, 28, 0.35)",
-                    borderRadius: "18px",
-                    padding: "26px",
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)"
-                  }}
+                  className="tree-branch-card tilt-card-3d"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
                 >
-                  <span style={{ fontSize: 38, fontWeight: 800, color: "#f39c12", display: "block" }}>
-                    B.Tech
-                  </span>
-                  <span style={{ fontSize: 14, color: "#fff", fontWeight: 700 }}>
-                    Electronics &amp; Communication
-                  </span>
-                  <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
-                    Technical precision applied to audio signals, electrical load &amp; team timing.
+                  <div className="tree-branch-badge" style={{ color: "#ffbe0b", borderColor: "rgba(255, 190, 11, 0.45)" }}>
+                    <Users size={13} />
+                    <span>BRANCH 02 // 2023 – 2025</span>
+                  </div>
+                  <h3 className="tree-branch-title">Team Lead – Technical &amp; Cultural Events</h3>
+                  <div className="tree-branch-sub">SIET Campus Fests &amp; Student Events</div>
+                  <p className="tree-branch-desc">
+                    Led volunteer teams and coordinated technical, cultural, and student events. Managed participant registrations, crowd movement, anchoring, stage preparation, and live execution.
                   </p>
+                  <div className="tree-branch-tags">
+                    <span className="tree-tag">Volunteer Squad Lead</span>
+                    <span className="tree-tag">Crowd Movement</span>
+                    <span className="tree-tag">Participant Registrations</span>
+                    <span className="tree-tag">Event Preparation</span>
+                  </div>
+                </div>
+
+                <div className="tree-node-marker" title="Branch 02: College Leadership">
+                  <Users size={20} color="#ffbe0b" />
+                </div>
+              </div>
+
+              {/* NODE 3: BRANCH 03 - VAISHNAVI EVENTS */}
+              <div className="tree-branch-item left reveal-left delay-3">
+                <div
+                  className="tree-branch-card tilt-card-3d"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tree-branch-badge" style={{ color: "#ff70a6", borderColor: "rgba(255, 112, 166, 0.45)" }}>
+                    <Heart size={13} />
+                    <span>BRANCH 03 // FIELD EXPERIENCE</span>
+                  </div>
+                  <h3 className="tree-branch-title">Event Operations Specialist</h3>
+                  <div className="tree-branch-sub">Vaishnavi Events, Hyderabad</div>
+                  <p className="tree-branch-desc">
+                    Supported wedding and social event execution. Assisted with stage setup, guest coordination, on-ground event operations, and vendor management.
+                  </p>
+                  <div className="tree-branch-tags">
+                    <span className="tree-tag">Wedding &amp; Social Execution</span>
+                    <span className="tree-tag">Stage Setup</span>
+                    <span className="tree-tag">Guest Coordination</span>
+                    <span className="tree-tag">Vendor Management</span>
+                  </div>
+                </div>
+
+                <div className="tree-node-marker" title="Branch 03: Vaishnavi Events">
+                  <Heart size={20} color="#ff70a6" />
+                </div>
+              </div>
+
+              {/* NODE 4: BRANCH 04 - MAHATHI EVENTS */}
+              <div className="tree-branch-item right reveal-right delay-4">
+                <div
+                  className="tree-branch-card tilt-card-3d"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tree-branch-badge" style={{ color: "#9d4edd", borderColor: "rgba(157, 78, 221, 0.45)" }}>
+                    <Building2 size={13} />
+                    <span>BRANCH 04 // FIELD EXPERIENCE</span>
+                  </div>
+                  <h3 className="tree-branch-title">Event Coordination Specialist</h3>
+                  <div className="tree-branch-sub">Mahathi Events, Hyderabad</div>
+                  <p className="tree-branch-desc">
+                    Assisted with wedding and corporate event execution. Coordinated vendors, decorators, photographers, and venue teams. Supported venue setup, guest arrangements, and event-day activities.
+                  </p>
+                  <div className="tree-branch-tags">
+                    <span className="tree-tag">Corporate &amp; Weddings</span>
+                    <span className="tree-tag">Decorators &amp; Photographers</span>
+                    <span className="tree-tag">Venue Teams</span>
+                    <span className="tree-tag">Event-Day Activities</span>
+                  </div>
+                </div>
+
+                <div className="tree-node-marker" title="Branch 04: Mahathi Events">
+                  <Building2 size={20} color="#9d4edd" />
+                </div>
+              </div>
+
+              {/* NODE 5: BRANCH 05 - G PRODUCTIONS */}
+              <div className="tree-branch-item left reveal-left delay-5">
+                <div
+                  className="tree-branch-card tilt-card-3d"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tree-branch-badge" style={{ color: "#5fe0d5", borderColor: "rgba(95, 224, 213, 0.55)" }}>
+                    <Briefcase size={13} />
+                    <span>BRANCH 05 // 2026 — PRESENT</span>
+                  </div>
+                  <h3 className="tree-branch-title" style={{ color: "var(--primary-gold)" }}>Event Operations &amp; Execution Executive</h3>
+                  <div className="tree-branch-sub">G Productions, Hyderabad</div>
+                  <p className="tree-branch-desc">
+                    Coordinate corporate events, concerts, weddings, conferences, exhibitions, press meets, and brand activations. Support venue selection, hotel quotations &amp; RFQs, stage &amp; sound operations, event proposals, and LinkedIn outreach.
+                  </p>
+                  <div className="tree-branch-tags">
+                    <span className="tree-tag">Corporate Events &amp; Concerts</span>
+                    <span className="tree-tag">Conferences &amp; Exhibitions</span>
+                    <span className="tree-tag">Quotation &amp; Vendor Comparison</span>
+                    <span className="tree-tag">Brand Activations</span>
+                  </div>
+                </div>
+
+                <div className="tree-node-marker" title="Branch 05: G Productions">
+                  <Briefcase size={20} color="#5fe0d5" />
+                </div>
+              </div>
+
+              {/* NODE 6: THE CROWN - DIGITAL MARKETING & SOCIAL PROMOTION */}
+              <div className="tree-branch-item right reveal-right delay-6">
+                <div
+                  className="tree-branch-card tilt-card-3d crown-card"
+                  onMouseMove={handle3DTilt}
+                  onMouseLeave={reset3DTilt}
+                >
+                  <div className="tree-branch-badge" style={{ color: "#ffbf69", borderColor: "rgba(255, 191, 105, 0.55)" }}>
+                    <Megaphone size={13} />
+                    <span>CROWN // EVENT MARKETING &amp; PROMOTION</span>
+                  </div>
+                  <h3 className="tree-branch-title" style={{ color: "#ffbf69" }}>Social Media Management &amp; Event Promotion</h3>
+                  <div className="tree-branch-sub">Instagram • LinkedIn • Facebook Campaign Coordination</div>
+                  <p className="tree-branch-desc">
+                    Promoting event businesses and brand visibility through content coordination, promotional reels, posts, and corporate networking. Building industry connections with venues, vendors, and corporate partners across Hyderabad.
+                  </p>
+                  <div className="tree-branch-tags">
+                    <span className="tree-tag crown-tag">Digital Promotion</span>
+                    <span className="tree-tag crown-tag">Instagram Reels &amp; Posts</span>
+                    <span className="tree-tag crown-tag">LinkedIn Corporate Outreach</span>
+                    <span className="tree-tag crown-tag">Brand Visibility</span>
+                  </div>
+                </div>
+
+                <div className="tree-node-marker crown-marker" title="Crown: Event Marketing & Digital Promotion">
+                  <Megaphone size={20} color="#ffbf69" />
                 </div>
               </div>
             </div>
@@ -1085,22 +1347,30 @@ export default function App() {
                 {deck.map((card, index) => {
                   const isFlipped = card.matched || flipped.includes(index);
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={card.id}
                       className={`memory-card-3d ${isFlipped ? "flipped" : ""}`}
                       onClick={() => handleCardClick(index)}
+                      aria-label={isFlipped ? `Card ${index + 1}: ${card.name}` : `Card ${index + 1}: Facedown celebration card`}
                     >
                       <div className="memory-card-inner">
-                        {/* Facedown */}
+                        {/* Facedown (Vector Monogram) */}
                         <div className="memory-card-face front-face">
-                          <span className="memory-card-logo">GN 🌸</span>
+                          <CardBackMonogram />
                         </div>
-                        {/* Faceup */}
-                        <div className={`memory-card-face back-face ${card.matched ? "matched" : ""}`}>
-                          <span className="memory-card-emoji">{card.emoji}</span>
+                        {/* Faceup (Pure Vector SVG Icon) */}
+                        <div
+                          className={`memory-card-face back-face ${card.matched ? "matched" : ""}`}
+                          style={{ borderColor: card.matched ? "#5fe0d5" : card.color }}
+                        >
+                          <div className="memory-card-svg-wrap">
+                            {renderCelebrationSvg(card.key, 28)}
+                          </div>
+                          <span className="memory-card-title">{card.name}</span>
                         </div>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -1126,10 +1396,10 @@ export default function App() {
                   </h3>
                   <p style={{ color: "var(--primary-gold)", fontWeight: 700, fontSize: 16, marginBottom: 12 }}>
                     {moves <= 16
-                      ? "🌟 MASTER EVENT COORDINATOR! (3 Stars)"
+                      ? "MASTER EVENT COORDINATOR (3 Stars)"
                       : moves <= 24
-                      ? "🎉 STAR EVENT ASSISTANT! (2 Stars)"
-                      : "☕ EVENT READY! Finished in " + gameTime + "s!"}
+                      ? "STAR EVENT ASSISTANT (2 Stars)"
+                      : "EVENT READY! Finished in " + gameTime + "s!"}
                   </p>
                   <p style={{ color: "var(--text-muted)", fontSize: 13, maxWidth: 400, marginBottom: 20 }}>
                     You completed the challenge in <strong>{moves} moves</strong> and <strong>{gameTime} seconds</strong>!
@@ -1158,20 +1428,23 @@ export default function App() {
         </section>
 
         {/* ══════════════════════════════════════════════════
-           SECTION 7: REAL JOURNEY / EXPERIENCE
+           SECTION 7: ON-GROUND COORDINATION STANDARDS
         ══════════════════════════════════════════════════ */}
         <section id="journey" className="section-journey">
           <div className="page-container">
-            <div className="reveal-init">
-              <div className="hero-tag">
+            <div className="reveal-init" style={{ textAlign: "center", maxWidth: 660, margin: "0 auto 36px" }}>
+              <div className="hero-tag" style={{ margin: "0 auto 14px", display: "inline-flex" }}>
                 <Sparkles size={12} color="#ff9f1c" />
-                <span>HANDS-ON WORK EXPERIENCE</span>
+                <span>ON-GROUND COMMITMENT</span>
               </div>
 
               <h2 className="section-title">
-                Learning by Doing &amp;<br />
-                <span style={{ color: "var(--primary-gold)", fontStyle: "italic" }}>Delivering on the Ground.</span>
+                My Coordination Philosophy &amp;<br />
+                <span style={{ color: "var(--primary-gold)", fontStyle: "italic" }}>Event Day Standards.</span>
               </h2>
+              <p style={{ color: "var(--text-muted)", fontSize: 15, marginTop: 10 }}>
+                Every celebration is treated as if it were for my own family — with warmth, absolute punctuality, and zero hidden stress.
+              </p>
             </div>
 
             <div className="timeline-list">
@@ -1180,18 +1453,17 @@ export default function App() {
                 onMouseMove={handle3DTilt}
                 onMouseLeave={reset3DTilt}
               >
-                <div className="timeline-period tilt-layer-1">2026 — PRESENT</div>
+                <div className="timeline-period tilt-layer-1">STANDARD 01</div>
                 <div className="tilt-layer-2">
-                  <h3 className="timeline-company-title">G Productions</h3>
-                  <div className="timeline-role">Event Operations &amp; Execution Executive</div>
+                  <h3 className="timeline-company-title">Transparent Pricing &amp; Direct Mandi Rates</h3>
+                  <div className="timeline-role">Fair Vendor Negotiation &amp; Itemized Estimates</div>
                   <p className="timeline-desc">
-                    Managing vendor shortlists, stage setups, venue coordination, and on-ground cues
-                    for corporate gatherings, intimate weddings, and social events in Hyderabad.
+                    Every rupee in your celebration budget is accounted for. I negotiate directly with Gudimalkapur flower mandis, sound operators, and caterers so you get honest rates without agency markups.
                   </p>
                   <div className="timeline-tags">
-                    <span className="timeline-tag">Vendor Coordination</span>
-                    <span className="timeline-tag">On-Ground Execution</span>
-                    <span className="timeline-tag">Event Flow</span>
+                    <span className="timeline-tag">100% Bill Transparency</span>
+                    <span className="timeline-tag">Direct Mandi Sourcing</span>
+                    <span className="timeline-tag">Itemized Estimates</span>
                   </div>
                 </div>
               </div>
@@ -1201,18 +1473,17 @@ export default function App() {
                 onMouseMove={handle3DTilt}
                 onMouseLeave={reset3DTilt}
               >
-                <div className="timeline-period tilt-layer-1">FIELD EXPERIENCE</div>
+                <div className="timeline-period tilt-layer-1">STANDARD 02</div>
                 <div className="tilt-layer-2">
-                  <h3 className="timeline-company-title">Mahathi Events</h3>
-                  <div className="timeline-role">Event Coordination &amp; Setup Assistant</div>
+                  <h3 className="timeline-company-title">Physical On-Ground Coordination</h3>
+                  <div className="timeline-role">Present From 6:00 AM Setup to Final Farewell</div>
                   <p className="timeline-desc">
-                    Assisted wedding and social event teams, keeping banquet venues, decor artists,
-                    and guest welcoming teams aligned during live ceremonies.
+                    I am physically present throughout your event. When a guest needs warm water, when the photographer needs the couple on stage, or when the cake table needs positioning — I handle it immediately.
                   </p>
                   <div className="timeline-tags">
-                    <span className="timeline-tag">Weddings</span>
-                    <span className="timeline-tag">Stage Decor</span>
-                    <span className="timeline-tag">Guest Assistance</span>
+                    <span className="timeline-tag">6 AM Setup Verification</span>
+                    <span className="timeline-tag">Family Host Support</span>
+                    <span className="timeline-tag">Micro-Cue Timing</span>
                   </div>
                 </div>
               </div>
@@ -1222,17 +1493,17 @@ export default function App() {
                 onMouseMove={handle3DTilt}
                 onMouseLeave={reset3DTilt}
               >
-                <div className="timeline-period tilt-layer-1">FIELD EXPERIENCE</div>
+                <div className="timeline-period tilt-layer-1">STANDARD 03</div>
                 <div className="tilt-layer-2">
-                  <h3 className="timeline-company-title">Vaishnavi Events</h3>
-                  <div className="timeline-role">Operations &amp; Floor Support</div>
+                  <h3 className="timeline-company-title">Intimate Guest Warmth &amp; Elder Hospitality</h3>
+                  <div className="timeline-role">Personalized Care for 30 to 300 Loved Ones</div>
                   <p className="timeline-desc">
-                    Got hands-on with social celebrations: backdrop setup, family follow-ups,
-                    music cues, and the little details that keep an event running smoothly.
+                    Unlike impersonal agencies that treat smaller gatherings as secondary, intimate events are my core specialty. Every family member and elder receives attentive, respectful coordination.
                   </p>
                   <div className="timeline-tags">
-                    <span className="timeline-tag">Social Gatherings</span>
-                    <span className="timeline-tag">Detail Management</span>
+                    <span className="timeline-tag">Elder Care Hospitality</span>
+                    <span className="timeline-tag">Family Peace of Mind</span>
+                    <span className="timeline-tag">Return Gift Handover</span>
                   </div>
                 </div>
               </div>
