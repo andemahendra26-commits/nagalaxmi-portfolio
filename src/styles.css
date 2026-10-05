@@ -132,7 +132,7 @@
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
-/* Print → one-click résumé PDF, always light */
+/* Print → one-click resume PDF, always light */
 @media print {
   :root, [data-theme="dark"] {
     --bg: #fff; --bg-alt: #fff; --surface: #fff; --ink: #000; --ink-2: #222; --muted: #444;

@@ -318,7 +318,7 @@ export default function App() {
             </button>
             <button type="button" className="btn btn-ghost btn-sm hidden nav:inline-flex" onClick={() => window.print()}>
               <Download size={15} aria-hidden="true" />
-              <span>Résumé PDF</span>
+              <span>Resume PDF</span>
             </button>
             <a href={`mailto:${CONTACT.email}`} className="btn btn-primary btn-sm hidden xs:inline-flex">
               <Mail size={15} aria-hidden="true" />
@@ -363,7 +363,7 @@ export default function App() {
             }}
           >
             <Download size={16} aria-hidden="true" />
-            <span>Save résumé as PDF</span>
+            <span>Save resume as PDF</span>
           </button>
         </nav>
       </header>
@@ -582,7 +582,7 @@ export default function App() {
                 Let's talk about a role on your events team.
               </h2>
               <p className="mt-4 mb-6 text-[1.0625rem] text-on-panel-muted">
-                I'm open to full-time positions in Hyderabad and happy to share references or a detailed résumé.
+                I'm open to full-time positions in Hyderabad and happy to share references or a detailed resume.
               </p>
               <ul className="flex flex-wrap gap-2" aria-label="Roles I'm interested in">
                 {ROLES.map((r) => (

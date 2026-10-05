@@ -1,8 +1,8 @@
 # Gurajala Nagalakshmi — Portfolio
 
-Personal portfolio and online résumé for Gurajala Nagalakshmi, an event operations and execution professional in Hyderabad who is looking for full-time roles with event management companies.
+Personal portfolio and online resume for Gurajala Nagalakshmi, an event operations and execution professional in Hyderabad who is looking for full-time roles with event management companies.
 
-The page covers experience, skills, education and contact details. The "Résumé PDF" button prints the page with a print-optimised stylesheet, so recruiters can save it as a PDF.
+The page covers experience, skills, education and contact details. The "Resume PDF" button prints the page with a print-optimised stylesheet, so recruiters can save it as a PDF.
 
 ## Run locally
 
