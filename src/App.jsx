@@ -22,6 +22,8 @@ import {
   Users,
   X
 } from "lucide-react";
+import portraitJpg from "./assets/nagalakshmi.jpg";
+import portraitWebp from "./assets/nagalakshmi.webp";
 
 const CONTACT = {
   email: "gurujalaloke@gmail.com",
@@ -42,7 +44,7 @@ const NAV = [
 
 const EXPERIENCE = [
   {
-    period: "2026 — Present",
+    period: "2025 — Present",
     role: "Event Operations & Execution Executive",
     company: "G Productions",
     place: "Hyderabad",
@@ -198,13 +200,11 @@ function Section({ id, alt, children, className = "" }) {
   );
 }
 
-function Monogram({ large }) {
+function Monogram() {
   return (
     <span
       aria-hidden="true"
-      className={`grid flex-none place-items-center rounded-full font-serif font-semibold tracking-wide ${
-        large ? "size-14 bg-accent text-lg text-on-accent" : "size-[38px] bg-ink text-sm text-bg"
-      }`}
+      className="grid size-[38px] flex-none place-items-center rounded-full bg-ink font-serif text-sm font-semibold tracking-wide text-bg"
     >
       GN
     </span>
@@ -409,12 +409,20 @@ export default function App() {
               className="reveal rounded-[20px] border border-line bg-surface p-6 shadow-card dark:shadow-none print:shadow-none"
               aria-label="Quick facts"
             >
-              <div className="flex items-center gap-4 border-b border-line pb-5">
-                <Monogram large />
-                <div>
-                  <p className="font-serif text-xl font-semibold">Nagalakshmi G.</p>
-                  <p className="text-sm text-muted">Event Operations Executive</p>
-                </div>
+              <picture>
+                <source srcSet={portraitWebp} type="image/webp" />
+                <img
+                  src={portraitJpg}
+                  alt="Gurajala Nagalakshmi"
+                  width="800"
+                  height="1000"
+                  fetchPriority="high"
+                  className="aspect-[4/5] w-full rounded-[14px] bg-bg-alt object-cover print:hidden"
+                />
+              </picture>
+              <div className="border-b border-line pt-5 pb-5 print:pt-0">
+                <p className="font-serif text-xl font-semibold">Nagalakshmi G.</p>
+                <p className="text-sm text-muted">Event Operations Executive</p>
               </div>
               <dl className="py-2">
                 {[
