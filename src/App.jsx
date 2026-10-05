@@ -371,7 +371,19 @@ export default function App() {
       <main id="main">
         {/* ── HERO ── */}
         <section id="top" className="pt-14 pb-18 nav:pt-24 nav:pb-28 print:py-3">
-          <div className="container-page grid grid-cols-[minmax(0,1fr)] items-center gap-10 nav:grid-cols-[1.35fr_1fr] nav:gap-16 print:grid-cols-[1.3fr_1fr] print:gap-6">
+          <div className="container-page grid grid-cols-[minmax(0,1fr)] items-center gap-10 md:grid-cols-[240px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)_300px] lg:gap-10 xl:grid-cols-[290px_minmax(0,1fr)_320px] xl:gap-12 print:grid-cols-[1.3fr_1fr] print:gap-6">
+            <picture className="reveal mx-auto block w-full max-w-[340px] md:max-w-none print:hidden">
+              <source srcSet={portraitWebp} type="image/webp" />
+              <img
+                src={portraitJpg}
+                alt="Gurajala Nagalakshmi"
+                width="800"
+                height="1000"
+                fetchPriority="high"
+                className="aspect-[4/5] w-full rounded-[20px] border border-line bg-bg-alt object-cover shadow-card dark:shadow-none"
+              />
+            </picture>
+
             <div className="reveal">
               <p className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[0.8125rem] font-medium text-ink-2 print:hidden">
                 <span
@@ -381,19 +393,19 @@ export default function App() {
                 Open to full-time roles with event management companies
               </p>
 
-              <h1 className="text-[clamp(2.5rem,7vw,4.25rem)] leading-[1.05] print:text-[26pt]">
+              <h1 className="text-[clamp(2.5rem,7vw,3.25rem)] leading-[1.05] xl:text-[3.5rem] print:text-[26pt]">
                 Gurajala <em className="text-accent italic">Nagalakshmi</em>
               </h1>
               <p className="mt-3 text-sm font-semibold tracking-[0.12em] text-muted uppercase">
                 Event Operations &amp; Execution
               </p>
 
-              <p className="mt-6 max-w-[56ch] text-lg text-ink-2">
+              <p className="mt-5 max-w-[56ch] text-base text-ink-2 xl:text-[1.0625rem]">
                 I help event teams run corporate events, concerts, weddings and brand activations smoothly on the
                 ground — handling venues, vendors, stage and sound, and guests so the show starts on time.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3 print:hidden">
+              <div className="mt-7 flex flex-wrap gap-3 print:hidden">
                 <a href="#experience" className="btn btn-primary">
                   <span>See my experience</span>
                   <ChevronDown size={16} aria-hidden="true" />
@@ -406,33 +418,23 @@ export default function App() {
             </div>
 
             <aside
-              className="reveal rounded-[20px] border border-line bg-surface p-6 shadow-card dark:shadow-none print:shadow-none"
+              className="reveal rounded-[20px] border border-line bg-surface p-6 shadow-card md:col-span-2 lg:col-span-1 dark:shadow-none print:col-span-1 print:shadow-none"
               aria-label="Quick facts"
             >
-              <picture>
-                <source srcSet={portraitWebp} type="image/webp" />
-                <img
-                  src={portraitJpg}
-                  alt="Gurajala Nagalakshmi"
-                  width="800"
-                  height="1000"
-                  fetchPriority="high"
-                  className="aspect-[4/5] w-full rounded-[14px] bg-bg-alt object-cover print:hidden"
-                />
-              </picture>
-              <div className="border-b border-line pt-5 pb-5 print:pt-0">
-                <p className="font-serif text-xl font-semibold">Nagalakshmi G.</p>
+              <div className="border-b border-line pb-4">
+                <p className="font-serif text-xl font-semibold">At a glance</p>
                 <p className="text-sm text-muted">Event Operations Executive</p>
               </div>
-              <dl className="py-2">
+              <dl className="grid py-2 md:grid-cols-2 md:gap-x-8 lg:grid-cols-1">
+
                 {[
                   [Briefcase, "Currently", "G Productions"],
                   [MapPin, "Based in", "Hyderabad, Telangana"],
                   [GraduationCap, "Education", "B.Tech ECE, 2025"],
                   [Languages, "Languages", "Telugu, English, Hindi"]
                 ].map(([Icon, label, value]) => (
-                  <div key={label} className="flex justify-between gap-4 border-b border-dashed border-line py-3 last:border-b-0">
-                    <dt className="inline-flex items-center gap-2 text-sm text-muted">
+                  <div key={label} className="flex justify-between gap-4 border-b border-dashed border-line py-3 last:border-b-0 md:[&:nth-last-child(2)]:border-b-0 lg:[&:nth-last-child(2)]:border-b">
+                    <dt className="inline-flex flex-none items-center gap-2 text-sm whitespace-nowrap text-muted">
                       <Icon size={15} aria-hidden="true" /> {label}
                     </dt>
                     <dd className="text-right text-[0.9rem] font-semibold">{value}</dd>
