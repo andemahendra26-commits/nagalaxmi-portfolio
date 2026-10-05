@@ -257,7 +257,7 @@
   pointer-events: none;
 }
 
-/* ── Festival scenes (src/scenes.jsx) ── */
+/* ── Event scenes (src/scenes.jsx) ── */
 .scene .limb { transform-origin: 0 0; transform: rotate(var(--a)); animation: limb 1s ease-in-out infinite; }
 .scene .bob { animation: bob 0.9s ease-in-out infinite; }
 .scene .jump { animation: jump 0.55s ease-in-out infinite; }
@@ -269,6 +269,8 @@
 .scene .blink { animation: blink 2.4s ease-in-out infinite; }
 .scene .fall { animation: fall 1.6s linear infinite; }
 .scene .steam { animation: steam 2.4s ease-out infinite; }
+.scene .float-up { animation: float-up 3.2s ease-in infinite; }
+.scene .balloon { animation: balloon 3s ease-in-out infinite; }
 .scene .flame,
 .scene .wobble,
 .scene .sway-top,
@@ -294,6 +296,8 @@
 @keyframes orbit { 0%, 100% { transform: translateX(-12px); } 50% { transform: translateX(12px); } }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 @keyframes fall { from { transform: translateY(0); opacity: 1; } to { transform: translateY(34px); opacity: 0; } }
+@keyframes float-up { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-70px); opacity: 0; } }
+@keyframes balloon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes steam { from { transform: translateY(0); opacity: 0.8; } to { transform: translateY(-14px); opacity: 0; } }
 @keyframes flame { from { transform: scale(1, 1); } to { transform: scale(0.85, 1.2); } }
 @keyframes wobble { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }

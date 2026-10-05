@@ -1,7 +1,7 @@
 import React from "react";
 
 /*
-  Animated festival illustrations (pure SVG + CSS keyframes in styles.css).
+  Animated event illustrations (pure SVG + CSS keyframes in styles.css).
   Every scene uses a 400×300 canvas. People are drawn with their feet at (0,0),
   about 92 units tall, and arms hang from the shoulders at (±10, -64).
   Arm angles: 0 = hanging down; negative swings the right arm outward/up,
@@ -17,7 +17,12 @@ const POSES = {
   drum: { r: [-60, 28, 0.45], l: [-38] },
   shower: { r: [-160, -176, 1.1], l: [160, 176, 1.1] },
   offer: { r: [32], l: [-32] },
-  dance: { r: [-150, -70, 0.55], l: [150, 70, 0.55] }
+  dance: { r: [-150, -70, 0.55], l: [150, 70, 0.55] },
+  wave: { r: [-125, -170, 0.6], l: [12] },
+  glass: { r: [-150, -165, 1.2], l: [12] },
+  glassL: { r: [-12], l: [150, 165, 1.2] },
+  belly: { r: [22], l: [-22] },
+  mic: { r: [150, 142, 1.4], l: [12] }
 };
 
 function Limb({ x, a, b, dur, delay, sleeve, skin, item }) {
@@ -36,7 +41,7 @@ function Limb({ x, a, b, dur, delay, sleeve, skin, item }) {
   );
 }
 
-function Person({
+export function Person({
   x,
   y,
   s = 1,
@@ -146,22 +151,22 @@ function Person({
 
 /* ── Shared props ── */
 
-function Frame({ id, label, sky, children }) {
+export function Frame({ id, label, sky, w = 400, h = 300, children }) {
   return (
-    <svg viewBox="0 0 400 300" role="img" aria-label={label} className="block h-auto w-full">
+    <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={label} className="block h-auto w-full">
       <defs>
         <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={sky[0]} />
           <stop offset="1" stopColor={sky[1]} />
         </linearGradient>
       </defs>
-      <rect width="400" height="300" fill={`url(#${id}-sky)`} />
+      <rect width={w} height={h} fill={`url(#${id}-sky)`} />
       {children}
     </svg>
   );
 }
 
-function Diya({ x, y, d = 0 }) {
+export function Diya({ x, y, d = 0 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
       <path d="M-8 -2 Q0 7 8 -2 Z" fill="#b5541c" />
@@ -171,16 +176,16 @@ function Diya({ x, y, d = 0 }) {
   );
 }
 
-function Lights({ y = 12, n = 14, sag = 14, colors }) {
+export function Lights({ y = 12, n = 14, sag = 14, w = 400, colors }) {
   return (
     <g>
-      <path d={`M0 ${y} Q200 ${y + 2 * sag} 400 ${y}`} stroke="#3a2a1a" strokeWidth="1" fill="none" opacity="0.6" />
+      <path d={`M0 ${y} Q${w / 2} ${y + 2 * sag} ${w} ${y}`} stroke="#3a2a1a" strokeWidth="1" fill="none" opacity="0.6" />
       {Array.from({ length: n }, (_, i) => {
         const t = (i + 0.5) / n;
         return (
           <circle
             key={i}
-            cx={t * 400}
+            cx={t * w}
             cy={y + 4 * sag * t * (1 - t) + 3}
             r="3"
             fill={colors[i % colors.length]}
@@ -217,82 +222,62 @@ function Stars({ points }) {
   ));
 }
 
-function Petals({ count = 10, colors }) {
+export function Petals({ count = 10, w = 400, colors }) {
   return Array.from({ length: count }, (_, i) => (
     <g key={i} className="petal" style={{ animationDelay: `${-i * 0.7}s` }}>
-      <ellipse cx={20 + i * (360 / count)} cy="0" rx="2.6" ry="4.2" fill={colors[i % colors.length]} />
+      <ellipse cx={w * 0.05 + i * ((w * 0.9) / count)} cy="0" rx="2.6" ry="4.2" fill={colors[i % colors.length]} />
     </g>
   ));
 }
 
-/* ── 1. Sankranti: kites, rangoli, Bhogi bonfire ── */
+/* ── Shared decorations ── */
 
-function Kite({ ax, ay, kx, ky, color, accent, delay = 0 }) {
+function Bunting({ colors }) {
+  const n = 15;
   return (
-    <g transform={`translate(${ax} ${ay})`}>
-      <g className="kite-sway" style={{ animationDelay: `${delay}s` }}>
-        <path d={`M0 0 Q${kx * 0.6} ${ky * 0.35} ${kx} ${ky}`} stroke="#5c4033" strokeWidth="0.8" fill="none" opacity="0.7" />
-        <g transform={`translate(${kx} ${ky}) rotate(-12)`}>
-          <path d="M0 -15 L11 0 L0 17 L-11 0 Z" fill={color} />
-          <path d="M0 0 L11 0 L0 17 Z" fill={accent} opacity="0.55" />
-          <path d="M0 -15 L0 17 M-11 0 L11 0" stroke="#fff" strokeWidth="0.8" opacity="0.7" />
-          <path d="M0 17 q4 6 0 12 q-4 6 0 12" stroke={accent} strokeWidth="1.4" fill="none" />
-          <path d="M-3 27 L3 31 L3 27 L-3 31 Z" fill={accent} />
-        </g>
-      </g>
+    <g>
+      <path d="M0 20 Q200 60 400 20" stroke="#6b4226" strokeWidth="1" fill="none" />
+      {Array.from({ length: n }, (_, i) => {
+        const t = (i + 0.5) / n;
+        return (
+          <g key={i} transform={`translate(${t * 400} ${20 + 40 * t * (1 - t)})`}>
+            <g className="sway-top" style={{ animationDelay: `${-i * 0.25}s` }}>
+              <path d="M-7 0 L7 0 L0 14 Z" fill={colors[i % colors.length]} />
+            </g>
+          </g>
+        );
+      })}
     </g>
   );
 }
 
-function Bonfire({ x, y }) {
+function Firework({ x, y, color, delay = 0, r = 30 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <path d="M-16 0 L16 -6 M-16 -6 L16 0" stroke="#6f4518" strokeWidth="5" strokeLinecap="round" />
-      <path className="flame" d="M0 -40 Q14 -22 10 -6 Q0 0 -10 -6 Q-14 -22 0 -40 Z" fill="#fb8500" />
-      <path className="flame" style={{ animationDelay: "-0.25s" }} d="M0 -28 Q8 -16 6 -6 Q0 -2 -6 -6 Q-8 -16 0 -28 Z" fill="#ffd60a" />
+      <g className="burst" style={{ animationDelay: `${delay}s` }}>
+        {Array.from({ length: 14 }, (_, i) => {
+          const a = (i / 14) * Math.PI * 2;
+          return (
+            <g key={i}>
+              <line
+                x1={Math.cos(a) * r * 0.3}
+                y1={Math.sin(a) * r * 0.3}
+                x2={Math.cos(a) * r}
+                y2={Math.sin(a) * r}
+                stroke={color}
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <circle cx={Math.cos(a) * (r + 5)} cy={Math.sin(a) * (r + 5)} r="1.6" fill={color} />
+            </g>
+          );
+        })}
+      </g>
     </g>
   );
 }
 
-export function SankrantiScene() {
-  return (
-    <Frame
-      id="sankranti"
-      label="Sankranti: children fly kites from a terrace while their parents cheer, beside a rangoli and a Bhogi bonfire"
-      sky={["#ffd6a5", "#ffc8dd"]}
-    >
-      <circle cx="335" cy="62" r="40" fill="#ffd166" className="pulse" />
-      <circle cx="335" cy="62" r="25" fill="#ffd166" />
-      <g className="cloud" fill="#fff" opacity="0.85">
-        <ellipse cx="70" cy="52" rx="28" ry="9" />
-        <ellipse cx="90" cy="45" rx="17" ry="10" />
-        <ellipse cx="230" cy="30" rx="22" ry="7" />
-        <ellipse cx="245" cy="25" rx="12" ry="7" />
-      </g>
-      <g transform="translate(176 72)">
-        <g className="kite-sway" style={{ animationDelay: "-1s" }}>
-          <path d="M0 -8 L6 0 L0 9 L-6 0 Z" fill="#8338ec" />
-          <path d="M0 9 q2 4 0 8" stroke="#8338ec" strokeWidth="1" fill="none" />
-        </g>
-      </g>
-
-      <rect y="206" width="400" height="10" fill="#d4a373" />
-      <rect y="214" width="400" height="86" fill="#f3dfc1" />
-      <Rangoli x={150} y={284} r={30} colors={["#ff006e", "#ffbe0b", "#3a86ff"]} />
-      <Bonfire x={36} y={272} />
-
-      <Kite ax={111} ay={194} kx={-38} ky={-138} color="#e63946" accent="#ffb703" />
-      <Kite ax={200} ay={197} kx={62} ky={-128} color="#06d6a0" accent="#ff006e" delay={-1.5} />
-
-      <Person x={95} y={262} s={0.78} kind="kurta" outfit="#3a86ff" trim="#ffbe0b" pants="#1d3557" pose="kite" />
-      <Person x={185} y={262} s={0.74} outfit="#ff006e" trim="#ffd60a" skin="#8d5524" pose="kite" delay={0.2} />
-      <Person x={272} y={262} s={0.95} kind="kurta" outfit="#fefae0" trim="#e76f51" skin="#8d5524" pose="cheer" delay={0.1} />
-      <Person x={335} y={262} s={0.92} outfit="#2a9d8f" trim="#ffb703" skin="#c68642" pose="clap" delay={0.35} />
-    </Frame>
-  );
-}
-
-/* ── 2. Telugu wedding: talambralu under the mandapam ── */
+/* ── Marriage: talambralu under the mandapam ── */
 
 export function WeddingScene() {
   const rice = Array.from({ length: 16 }, (_, i) => ({
@@ -352,286 +337,392 @@ export function WeddingScene() {
   );
 }
 
-/* ── 3. Bathukamma: women circling the flower stack ── */
 
-export function BathukammaScene() {
-  const widths = [84, 72, 60, 49, 38, 28, 19, 10];
-  const colors = ["#2d6a4f", "#ff4d6d", "#ffd60a", "#c77dff", "#ff8500", "#f8f9fa", "#ff4d6d"];
-  const sarees = [
-    ["#ff006e", "#ffd60a"],
-    ["#3a86ff", "#ffbe0b"],
-    ["#8338ec", "#ffd60a"],
-    ["#fb5607", "#06d6a0"],
-    ["#06d6a0", "#ff006e"],
-    ["#ffbe0b", "#d00000"],
-    ["#ef476f", "#ffd166"],
-    ["#118ab2", "#ffd60a"]
-  ];
-  const skins = ["#8d5524", "#a0662f", "#c68642", "#b5733c"];
+/* ── Small props ── */
+
+function Heart({ x, y, color, d = 0, s = 1 }) {
   return (
-    <Frame
-      id="bathukamma"
-      label="Bathukamma: women in bright sarees circle a seven-layer flower stack, clapping and singing at night"
-      sky={["#140b2e", "#5a2a86"]}
-    >
-      <circle cx="62" cy="52" r="26" fill="#fff3c4" className="pulse" />
-      <circle cx="62" cy="52" r="16" fill="#fff3c4" />
-      <Stars points={[[130, 30], [180, 58], [240, 22], [300, 48], [350, 26], [380, 70], [110, 80], [270, 86], [20, 100], [330, 110]]} />
-      <rect y="232" width="400" height="68" fill="#2b1846" />
-      <ellipse cx="200" cy="262" rx="190" ry="34" fill="#3a1f5c" />
-      <defs>
-        <radialGradient id="bathukamma-glow">
-          <stop offset="0" stopColor="#ffd60a" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#ffd60a" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <circle cx="200" cy="200" r="78" fill="url(#bathukamma-glow)" className="pulse" />
-
-      <g className="orbit-a">
-        {[70, 140, 260, 330].map((px, i) => (
-          <Person key={px} x={px} y={236} s={0.72} outfit={sarees[i][0]} trim={sarees[i][1]} skin={skins[i]} pose="clap" delay={i * 0.15} />
-        ))}
-      </g>
-
-      <ellipse cx="200" cy="248" rx="48" ry="6" fill="#d4a017" />
-      {colors.map((c, i) => {
-        const yb = 246 - i * 13;
-        const wb = widths[i] / 2;
-        const wt = widths[i + 1] / 2;
-        return (
-          <g key={i}>
-            <path d={`M${200 - wb} ${yb} L${200 + wb} ${yb} L${200 + wt} ${yb - 13} L${200 - wt} ${yb - 13} Z`} fill={c} />
-            {Array.from({ length: 4 }, (_, k) => (
-              <circle
-                key={k}
-                cx={200 - wb * 0.7 + (k * wb * 1.4) / 3}
-                cy={yb - 6.5}
-                r="1.8"
-                fill={i === 0 ? "#95d5b2" : "#ffffff"}
-                opacity="0.55"
-              />
-            ))}
-          </g>
-        );
-      })}
-      <path d="M195 155 L205 155 L200 142 Z" fill="#ffd60a" />
-      <circle cx="200" cy="141" r="2.4" fill="#ffd60a" />
-      <Diya x={170} y={262} />
-      <Diya x={230} y={262} d={-0.2} />
-
-      <g className="orbit-b">
-        {[45, 140, 260, 355].map((px, i) => (
-          <Person
-            key={px}
-            x={px}
-            y={292}
-            s={0.95}
-            outfit={sarees[i + 4][0]}
-            trim={sarees[i + 4][1]}
-            skin={skins[(i + 2) % 4]}
-            pose="clap"
-            delay={0.35 + i * 0.15}
-          />
-        ))}
-      </g>
-    </Frame>
-  );
-}
-
-/* ── 4. Bonalu: bonam pots, Pothuraju and dappu drums ── */
-
-function Bonam({ d = 0 }) {
-  return (
-    <g className="wobble" style={{ animationDelay: `${d}s` }}>
-      <ellipse cx="0" cy="-100" rx="11" ry="9.5" fill="#d9480f" />
-      <path d="M-11 -101 L11 -101" stroke="#ffd60a" strokeWidth="2.2" />
-      <path d="M-9.5 -96 Q0 -92 9.5 -96" stroke="#fff" strokeWidth="1.3" strokeDasharray="1.4 2.4" fill="none" />
-      <circle cx="0" cy="-104" r="1.6" fill="#d00000" />
-      <rect x="-6" y="-114" width="12" height="5.5" rx="2" fill="#bc3908" />
-      {[-40, -18, 18, 40].map((a, i) => (
-        <ellipse key={a} cx="0" cy="-121" rx="2.6" ry="7.5" fill={i % 2 ? "#2b9348" : "#55a630"} transform={`rotate(${a} 0 -114)`} />
-      ))}
-      <ellipse cx="0" cy="-116" rx="5" ry="1.8" fill="#ffd60a" />
-      <path className="flame" d="M0 -126 Q3 -121 0 -117.5 Q-3 -121 0 -126 Z" fill="#ff9e00" />
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <path className="float-up" style={{ animationDelay: `${d}s` }} d="M0 4 C-8 -3 -4 -10 0 -5 C4 -10 8 -3 0 4 Z" fill={color} />
     </g>
   );
 }
 
-function Bunting({ colors }) {
-  const n = 15;
-  return (
-    <g>
-      <path d="M0 20 Q200 60 400 20" stroke="#6b4226" strokeWidth="1" fill="none" />
-      {Array.from({ length: n }, (_, i) => {
-        const t = (i + 0.5) / n;
-        return (
-          <g key={i} transform={`translate(${t * 400} ${20 + 40 * t * (1 - t)})`}>
-            <g className="sway-top" style={{ animationDelay: `${-i * 0.25}s` }}>
-              <path d="M-7 0 L7 0 L0 14 Z" fill={colors[i % colors.length]} />
-            </g>
-          </g>
-        );
-      })}
-    </g>
-  );
-}
-
-export function BonaluScene() {
-  const whip = <path d="M0 26 q16 8 8 24 q-8 14 10 22" stroke="#6f1d1b" strokeWidth="2" fill="none" strokeLinecap="round" />;
-  const drum = (
-    <g>
-      <circle cx="-8" cy="-48" r="12" fill="#e9c46a" stroke="#8d5524" strokeWidth="2.5" />
-      <circle cx="-8" cy="-48" r="7" fill="none" stroke="#c9a227" strokeWidth="0.8" />
-    </g>
-  );
-  return (
-    <Frame
-      id="bonalu"
-      label="Bonalu: women carry decorated bonam pots with neem leaves and lamps on their heads, led by a dancing Pothuraju and a dappu drummer"
-      sky={["#ffe5a0", "#ffb4a2"]}
-    >
-      <polygon
-        points="150,236 150,150 160,150 160,130 170,130 170,112 180,112 180,96 192,96 192,82 208,82 208,96 220,96 220,112 230,112 230,130 240,130 240,150 250,150 250,236"
-        fill="#e76f51"
-        opacity="0.35"
-      />
-      <circle cx="200" cy="76" r="5" fill="#ffb703" opacity="0.7" />
-      <Bunting colors={["#ff006e", "#ffbe0b", "#3a86ff", "#06d6a0", "#fb5607"]} />
-      <rect y="238" width="400" height="62" fill="#f6bd60" opacity="0.6" />
-      <Petals count={8} colors={["#fb8500", "#ffd60a"]} />
-
-      <Person x={52} y={270} s={0.9} kind="kurta" outfit="#264653" trim="#e9c46a" pants="#f1faee" pose="drum" prop={drum} />
-      <Person x={125} y={266} s={0.9} outfit="#ffbe0b" trim="#d00000" skin="#8d5524" pose="pot" prop={<Bonam />} />
-      <Person x={190} y={262} s={0.9} outfit="#06d6a0" trim="#ff006e" skin="#a0662f" pose="pot" delay={0.4} prop={<Bonam d={-0.4} />} />
-      <Person x={252} y={266} s={0.88} outfit="#ff006e" trim="#ffd60a" skin="#c68642" pose="pot" delay={0.8} prop={<Bonam d={-0.8} />} />
-      <Person x={330} y={270} kind="pothu" outfit="#d00000" trim="#ffd60a" skin="#e0a526" pose="dance" motion="jump" rItem={whip} />
-    </Frame>
-  );
-}
-
-/* ── 5. Ugadi: mango-leaf toranam, pachadi and a fresh start ── */
-
-export function UgadiScene() {
-  const n = 19;
-  const cap = (
-    <g className="toss">
-      <path d="M-14 -96 L0 -102 L14 -96 L0 -90 Z" fill="#111" />
-      <rect x="-6" y="-95" width="12" height="5" fill="#111" />
-      <path d="M14 -96 L15 -86" stroke="#ffd60a" strokeWidth="1.4" />
-    </g>
-  );
-  const bowl = (
-    <g>
-      <path d="M-9 -42 Q0 -30 9 -42 Z" fill="#a0522d" />
-      <ellipse cx="0" cy="-42" rx="9" ry="2.4" fill="#e9c46a" />
-      {[-3, 3].map((sx, i) => (
-        <g key={sx} transform={`translate(${sx} -46)`}>
-          <path className="steam" style={{ animationDelay: `${-i * 1.2}s` }} d="M0 0 q3 -4 0 -8 q-3 -4 0 -8" stroke="#fff" strokeWidth="1.3" fill="none" />
-        </g>
-      ))}
-    </g>
-  );
-  return (
-    <Frame
-      id="ugadi"
-      label="Ugadi: a family at a doorway decorated with a mango-leaf toranam; a graduate tosses her cap while grandmother offers Ugadi pachadi"
-      sky={["#fff3c4", "#d8f3dc"]}
-    >
-      <rect y="20" width="400" height="216" fill="#ffe3c2" />
-      <rect y="236" width="400" height="64" fill="#f2cc8f" />
-      <rect x="150" y="78" width="100" height="158" fill="#7f4f24" />
-      <rect x="158" y="86" width="40" height="150" fill="#9c6644" />
-      <rect x="202" y="86" width="40" height="150" fill="#9c6644" />
-      <path d="M178 120 l10 14 l-10 14 l-10 -14 Z M222 120 l10 14 l-10 14 l-10 -14 Z" fill="#7f4f24" />
-      <rect x="150" y="232" width="100" height="6" fill="#ffd60a" />
-      {[160, 180, 200, 220, 240].map((dx) => (
-        <circle key={dx} cx={dx} cy="235" r="1.6" fill="#d00000" />
-      ))}
-
-      <path d="M20 40 Q200 92 380 40" stroke="#6b4226" strokeWidth="1.2" fill="none" />
-      {Array.from({ length: n }, (_, i) => {
-        const t = i / (n - 1);
-        return (
-          <g key={i} transform={`translate(${20 + 360 * t} ${40 + 52 * t * (1 - t)})`}>
-            <g className="sway-top" style={{ animationDelay: `${-i * 0.2}s` }}>
-              {i % 3 === 1 ? (
-                <circle cx="0" cy="5" r="4" fill="#fb8500" />
-              ) : (
-                <path d="M0 0 Q6 11 0 24 Q-6 11 0 0 Z" fill={i % 2 ? "#2d6a4f" : "#52b788"} />
-              )}
-            </g>
-          </g>
-        );
-      })}
-
-      <Rangoli x={200} y={278} r={26} colors={["#ffffff", "#ff006e", "#ffbe0b"]} />
-      <Person x={100} y={264} s={0.9} outfit="#e9c46a" trim="#bc4749" hair="#d9d9d9" skin="#8d5524" pose="offer" prop={bowl} />
-      <Person x={200} y={262} outfit="#7209b7" trim="#ffd60a" skin="#a0662f" pose="cheer" delay={0.2} prop={cap} />
-      <Person x={298} y={264} s={0.98} kind="kurta" outfit="#0077b6" trim="#ffd60a" pants="#f8f9fa" skin="#8d5524" pose="clap" delay={0.4} />
-      <Person x={356} y={268} s={0.6} outfit="#ff70a6" trim="#ffd60a" skin="#c68642" pose="cheer" delay={0.1} />
-    </Frame>
-  );
-}
-
-/* ── 6. Kolatam under festival fireworks ── */
-
-function Firework({ x, y, color, delay = 0, r = 30 }) {
+function Note({ x, y, color, d = 0 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <g className="burst" style={{ animationDelay: `${delay}s` }}>
-        {Array.from({ length: 14 }, (_, i) => {
-          const a = (i / 14) * Math.PI * 2;
-          return (
-            <g key={i}>
-              <line
-                x1={Math.cos(a) * r * 0.3}
-                y1={Math.sin(a) * r * 0.3}
-                x2={Math.cos(a) * r}
-                y2={Math.sin(a) * r}
-                stroke={color}
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <circle cx={Math.cos(a) * (r + 5)} cy={Math.sin(a) * (r + 5)} r="1.6" fill={color} />
-            </g>
-          );
-        })}
+      <g className="float-up" style={{ animationDelay: `${d}s` }}>
+        <ellipse cx="0" cy="0" rx="4" ry="3" fill={color} />
+        <path d="M3.6 -1 L3.6 -16 L11 -13" stroke={color} strokeWidth="1.8" fill="none" strokeLinecap="round" />
       </g>
     </g>
   );
 }
 
-export function KolatamScene() {
-  const stick = (
-    <g>
-      <line x1="0" y1="16" x2="0" y2="44" stroke="#ffbe0b" strokeWidth="2.6" strokeLinecap="round" />
-      <line x1="0" y1="20" x2="0" y2="42" stroke="#d00000" strokeWidth="2.6" strokeDasharray="2 4" />
+function Balloon({ x, y, color, d = 0 }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <g className="balloon" style={{ animationDelay: `${d}s` }}>
+        <path d="M0 18 q-4 12 2 24 q5 12 -1 26" stroke="#6c757d" strokeWidth="0.8" fill="none" />
+        <ellipse cx="0" cy="0" rx="14" ry="17" fill={color} />
+        <ellipse cx="-5" cy="-6" rx="3" ry="5" fill="#fff" opacity="0.45" />
+        <path d="M-3 18 L3 18 L0 14 Z" fill={color} />
+      </g>
     </g>
   );
-  const dancers = [
-    [70, "#ff006e", "#ffd60a", "#a0662f", "orbit-a"],
-    [150, "#ffbe0b", "#8338ec", "#8d5524", "orbit-b"],
-    [250, "#06d6a0", "#ff006e", "#c68642", "orbit-a"],
-    [330, "#8338ec", "#ffbe0b", "#b5733c", "orbit-b"]
-  ];
+}
+
+function MarigoldStrand({ x, n = 8, d = 0 }) {
   return (
-    <Frame
-      id="kolatam"
-      label="Kolatam: four dancers strike painted sticks in rhythm under festival fireworks, with diyas glowing on the ground"
-      sky={["#0b0420", "#3c096c"]}
-    >
-      <Stars points={[[30, 30], [90, 120], [150, 20], [210, 50], [260, 130], [320, 24], [370, 90], [60, 70], [180, 110], [390, 40]]} />
-      <Firework x={90} y={70} color="#f472b6" />
-      <Firework x={300} y={58} color="#facc15" delay={-0.9} r={34} />
-      <Firework x={205} y={100} color="#2dd4bf" delay={-1.7} r={24} />
-      <rect y="244" width="400" height="56" fill="#240046" />
-      {dancers.map(([px, outfit, trim, skin, orbit], i) => (
-        <g key={px} className={orbit}>
-          <Person x={px} y={270} s={0.92} outfit={outfit} trim={trim} skin={skin} pose="stick" delay={i % 2 ? 0.45 : 0} rItem={stick} lItem={stick} />
+    <g transform={`translate(${x} 0)`}>
+      <g className="sway-top" style={{ animationDelay: `${d}s` }}>
+        <line x1="0" y1="0" x2="0" y2={n * 8} stroke="#6b4226" strokeWidth="0.6" />
+        {Array.from({ length: n }, (_, i) => (
+          <circle key={i} cx="0" cy={i * 8 + 5} r="4" fill={i % 2 ? "#ffb703" : "#fb8500"} />
+        ))}
+      </g>
+    </g>
+  );
+}
+
+const glass = (
+  <g>
+    <line x1="0" y1="28" x2="0" y2="34" stroke="#e9ecef" strokeWidth="1.4" />
+    <path d="M0 34 L-6 42 L6 42 Z" fill="#ff8fab" stroke="#fff" strokeWidth="0.8" />
+  </g>
+);
+
+const mic = (
+  <g>
+    <rect x="-2" y="26" width="4" height="9" rx="2" fill="#adb5bd" />
+    <circle cx="0" cy="36" r="3.4" fill="#495057" />
+  </g>
+);
+
+const partyHat = (color) => (
+  <g>
+    <path d="M-7 -89 L7 -89 L0 -108 Z" fill={color} />
+    <path d="M-4.5 -96 L4.5 -96 M-2.5 -102 L2.5 -102" stroke="#fff" strokeWidth="1.4" />
+    <circle cx="0" cy="-109" r="2.4" fill="#fff" />
+  </g>
+);
+
+const haldiBowl = (
+  <g>
+    <path d="M-9 -42 Q0 -31 9 -42 Z" fill="#b08968" />
+    <ellipse cx="0" cy="-42" rx="9" ry="2.4" fill="#ffd60a" />
+  </g>
+);
+
+const banglePlate = (
+  <g>
+    <ellipse cx="0" cy="-42" rx="11" ry="3" fill="#d4a017" />
+    {["#ff006e", "#06d6a0", "#ffbe0b", "#3a86ff"].map((c, i) => (
+      <ellipse key={c} cx={-6 + i * 4} cy="-45" rx="3" ry="1.6" fill="none" stroke={c} strokeWidth="1.3" />
+    ))}
+  </g>
+);
+
+const dhol = (
+  <g>
+    <rect x="-20" y="-56" width="24" height="16" rx="7" fill="#d62828" stroke="#ffd60a" strokeWidth="1.5" />
+    <ellipse cx="-20" cy="-48" rx="3" ry="8" fill="#f1faee" />
+    <ellipse cx="4" cy="-48" rx="3" ry="8" fill="#f1faee" />
+  </g>
+);
+
+/* ── Engagement: ring, flower arch, rising hearts ── */
+
+export function EngagementScene() {
+  const flowers = Array.from({ length: 21 }, (_, i) => {
+    const a = Math.PI - (i / 20) * Math.PI;
+    return { x: 200 + Math.cos(a) * 150, y: 262 - Math.sin(a) * 165, c: ["#ffffff", "#ff006e", "#ffd60a"][i % 3] };
+  });
+  return (
+    <Frame id="engagement" label="Engagement: a couple under a flower arch with a sparkling ring between them and hearts floating up as guests clap" sky={["#ffafcc", "#cdb4db"]}>
+      <path d="M50 262 A150 165 0 0 1 350 262" stroke="#2d6a4f" strokeWidth="4" fill="none" />
+      {flowers.map((f, i) => (
+        <circle key={i} cx={f.x} cy={f.y} r="7" fill={f.c} className="blink" style={{ animationDelay: `${(i % 4) * 0.4}s` }} />
+      ))}
+      <rect y="255" width="400" height="45" fill="#e7c6ff" />
+      <path d="M150 300 L170 255 L230 255 L250 300 Z" fill="#c1121f" opacity="0.85" />
+
+      <g transform="translate(200 165)">
+        <g className="balloon">
+          <Firework x={0} y={0} color="#ffffff" r={26} />
+          <circle cx="0" cy="6" r="10" fill="none" stroke="#ffd60a" strokeWidth="3.5" />
+          <path d="M0 -12 L7 -6 L0 0 L-7 -6 Z" fill="#caf0f8" stroke="#fff" strokeWidth="1" />
+        </g>
+      </g>
+
+      <Person x={70} y={266} s={0.85} outfit="#06d6a0" trim="#ffd60a" skin="#c68642" pose="clap" delay={0.2} />
+      <Person x={165} y={262} outfit="#ff006e" trim="#ffd60a" skin="#a0662f" pose="offer" />
+      <Person x={235} y={262} s={1.05} kind="kurta" outfit="#3a0ca3" trim="#ffd60a" pants="#f8f9fa" skin="#8d5524" pose="offer" delay={0.3} />
+      <Person x={330} y={266} s={0.85} kind="kurta" outfit="#ffbe0b" trim="#e63946" pants="#264653" pose="clap" delay={0.5} />
+
+      {[[150, 150, "#ff006e"], [250, 140, "#e63946"], [180, 120, "#ff4d6d"], [225, 110, "#ff006e"], [120, 130, "#c9184a"], [280, 160, "#ff4d6d"]].map(([x, y, c], i) => (
+        <Heart key={i} x={x} y={y} color={c} d={-i * 0.55} />
+      ))}
+    </Frame>
+  );
+}
+
+/* ── Haldi, Mehendi & Sangeet: marigolds, turmeric, dhol ── */
+
+export function HaldiScene() {
+  return (
+    <Frame id="haldi" label="Haldi and sangeet: women dance under marigold strings while one offers a bowl of turmeric to the bride and a dhol player keeps the beat" sky={["#fff3b0", "#ffd166"]}>
+      {[30, 72, 115, 157, 200, 243, 285, 328, 370].map((x, i) => (
+        <MarigoldStrand key={x} x={x} n={i % 2 ? 7 : 9} d={-i * 0.3} />
+      ))}
+      <rect y="250" width="400" height="50" fill="#ffb703" opacity="0.5" />
+      <Rangoli x={200} y={284} r={26} colors={["#ffffff", "#f72585", "#2b9348"]} />
+      <Petals count={10} colors={["#ffd60a", "#fb8500", "#ffffff"]} />
+
+      <Person x={60} y={266} s={0.9} kind="kurta" outfit="#e85d04" trim="#ffd60a" pants="#f8f9fa" skin="#8d5524" pose="drum" prop={dhol} />
+      <Person x={140} y={262} s={0.92} outfit="#2b9348" trim="#ffd60a" skin="#a0662f" pose="offer" prop={haldiBowl} />
+      <Person x={200} y={258} outfit="#ffd60a" trim="#2b9348" skin="#c68642" pose="clap" delay={0.2} />
+      <Person x={262} y={262} s={0.92} outfit="#f72585" trim="#ffd60a" skin="#8d5524" pose="cheer" motion="jump" delay={0.1} />
+      <Person x={340} y={266} s={0.88} outfit="#7209b7" trim="#ffd60a" skin="#b5733c" pose="dance" motion="jump" delay={0.35} />
+    </Frame>
+  );
+}
+
+/* ── Cocktail party: disco ball, DJ, bar, clinking glasses ── */
+
+export function CocktailScene() {
+  const beams = ["#f72585", "#4cc9f0", "#ffd60a", "#80ffdb"];
+  return (
+    <Frame id="cocktail" label="Cocktail party: a spinning disco ball lights the floor while a DJ plays, the bar is set and two guests clink glasses" sky={["#10002b", "#3c096c"]}>
+      <Stars points={[[30, 30], [90, 60], [150, 18], [260, 30], [320, 70], [370, 22], [60, 110], [350, 120]]} />
+      {beams.map((c, i) => (
+        <polygon
+          key={c}
+          points={`200,40 ${40 + i * 100},250 ${90 + i * 100},250`}
+          fill={c}
+          opacity="0.16"
+          className="blink"
+          style={{ animationDelay: `${i * 0.5}s` }}
+        />
+      ))}
+      <line x1="200" y1="0" x2="200" y2="24" stroke="#adb5bd" strokeWidth="1" />
+      <g transform="translate(200 40)">
+        <g className="spin" style={{ animationDuration: "8s" }}>
+          {Array.from({ length: 10 }, (_, i) => {
+            const a = (i / 10) * Math.PI * 2;
+            return (
+              <line key={i} x1={Math.cos(a) * 20} y1={Math.sin(a) * 20} x2={Math.cos(a) * 34} y2={Math.sin(a) * 34} stroke={beams[i % 4]} strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+            );
+          })}
+        </g>
+        <circle r="16" fill="#adb5bd" />
+        <path d="M-16 0 H16 M-14 -8 H14 M-14 8 H14 M0 -16 V16 M-8 -14 V14 M8 -14 V14" stroke="#6c757d" strokeWidth="0.8" />
+        <circle cx="-5" cy="-6" r="3" fill="#fff" opacity="0.8" />
+      </g>
+      <rect y="250" width="400" height="50" fill="#240046" />
+
+      <Person x={80} y={250} s={0.9} kind="kurta" outfit="#4361ee" trim="#4cc9f0" pants="#212529" skin="#8d5524" pose="offer" />
+      <rect x="38" y="205" width="86" height="45" rx="4" fill="#240046" stroke="#7b2cbf" strokeWidth="2" />
+      <ellipse cx="60" cy="205" rx="13" ry="4" fill="#111" />
+      <ellipse cx="102" cy="205" rx="13" ry="4" fill="#111" />
+      {[52, 66, 80, 94, 108].map((x, i) => (
+        <circle key={x} cx={x} cy="228" r="2.5" fill={beams[i % 4]} className="blink" style={{ animationDelay: `${i * 0.25}s` }} />
+      ))}
+
+      <rect x="290" y="150" width="100" height="5" fill="#7b2cbf" />
+      {[300, 316, 332, 348, 364, 380].map((x, i) => (
+        <rect key={x} x={x - 3} y={i % 2 ? 132 : 128} width="6" height={i % 2 ? 18 : 22} rx="2" fill={["#2a9d8f", "#e76f51", "#e9c46a"][i % 3]} />
+      ))}
+      <rect x="290" y="215" width="105" height="35" rx="3" fill="#5a189a" />
+      {[305, 330, 355, 380].map((x) => (
+        <path key={x} d={`M${x} 215 L${x - 5} 205 L${x + 5} 205 Z`} fill="#80ffdb" opacity="0.8" />
+      ))}
+
+      <Person x={180} y={262} outfit="#f72585" trim="#ffd60a" skin="#a0662f" pose="glass" rItem={glass} />
+      <Person x={222} y={262} s={1.05} kind="kurta" outfit="#212529" trim="#ffd60a" pants="#343a40" skin="#c68642" pose="glassL" lItem={glass} delay={0.15} />
+      {[[150, 150, "#f72585"], [260, 140, "#4cc9f0"], [130, 110, "#ffd60a"], [280, 100, "#80ffdb"], [210, 120, "#f72585"]].map(([x, y, c], i) => (
+        <Note key={i} x={x} y={y} color={c} d={-i * 0.65} />
+      ))}
+    </Frame>
+  );
+}
+
+/* ── Birthday: cake, candles, balloons, party hats ── */
+
+export function BirthdayScene() {
+  return (
+    <Frame id="birthday" label="Birthday party: kids in party hats cheer beside a two-tier cake with flickering candles, balloons bobbing and confetti falling" sky={["#ffd6ff", "#bde0fe"]}>
+      <Bunting colors={["#ff006e", "#ffbe0b", "#3a86ff", "#06d6a0", "#8338ec"]} />
+      <Petals count={12} colors={["#ff006e", "#ffbe0b", "#3a86ff", "#06d6a0"]} />
+      <Balloon x={45} y={80} color="#ff006e" />
+      <Balloon x={80} y={62} color="#ffbe0b" d={-0.8} />
+      <Balloon x={320} y={66} color="#3a86ff" d={-1.4} />
+      <Balloon x={355} y={86} color="#8338ec" d={-0.4} />
+      <rect y="255" width="400" height="45" fill="#e0aaff" opacity="0.5" />
+
+      <rect x="150" y="200" width="100" height="8" rx="2" fill="#bc6c25" />
+      <rect x="158" y="208" width="6" height="50" fill="#99582a" />
+      <rect x="236" y="208" width="6" height="50" fill="#99582a" />
+      <rect x="165" y="170" width="70" height="30" rx="4" fill="#ffafcc" />
+      <path d="M165 176 Q172 184 179 176 Q186 184 193 176 Q200 184 207 176 Q214 184 221 176 Q228 184 235 176 L235 172 L165 172 Z" fill="#fff" />
+      <rect x="178" y="148" width="44" height="22" rx="3" fill="#ffffff" />
+      <rect x="178" y="160" width="44" height="3" fill="#ff006e" />
+      {[188, 200, 212].map((x, i) => (
+        <g key={x}>
+          <rect x={x - 1.5} y="136" width="3" height="12" fill={["#3a86ff", "#ffbe0b", "#06d6a0"][i]} />
+          <path className="flame" style={{ animationDelay: `${-i * 0.2}s` }} d={`M${x} 126 Q${x + 3} 131 ${x} 135 Q${x - 3} 131 ${x} 126 Z`} fill="#ff9e00" />
         </g>
       ))}
-      {Array.from({ length: 8 }, (_, i) => (
-        <Diya key={i} x={30 + i * 48} y={292} d={-i * 0.15} />
+
+      <Person x={60} y={262} s={0.95} outfit="#8338ec" trim="#ffd60a" skin="#a0662f" pose="clap" />
+      <Person x={115} y={262} s={0.68} kind="kurta" outfit="#4cc9f0" trim="#ffbe0b" pants="#1d3557" skin="#8d5524" pose="cheer" motion="jump" prop={partyHat("#ff006e")} />
+      <Person x={285} y={262} s={0.66} outfit="#ff70a6" trim="#ffd60a" skin="#c68642" pose="cheer" motion="jump" delay={0.25} prop={partyHat("#3a86ff")} />
+      <Person x={345} y={262} kind="kurta" outfit="#06d6a0" trim="#ffd60a" pants="#f8f9fa" skin="#8d5524" pose="clap" delay={0.4} />
+    </Frame>
+  );
+}
+
+/* ── Baby shower: mom-to-be, swinging cradle, bangle plate ── */
+
+export function BabyShowerScene() {
+  const belly = (
+    <g>
+      <ellipse cx="2" cy="-40" rx="11" ry="12" fill="#ff70a6" />
+      <path d="M-8 -48 Q2 -50 12 -44" stroke="#ffd60a" strokeWidth="1.5" fill="none" />
+    </g>
+  );
+  return (
+    <Frame id="babyshower" label="Baby shower: the mom-to-be smiles as family offer a plate of bangles and clap, beside a gently swinging cradle with pink and blue balloons" sky={["#caf0f8", "#ffc8dd"]}>
+      <Bunting colors={["#ffafcc", "#a2d2ff", "#ffffff", "#bde0fe", "#ffc8dd"]} />
+      <Balloon x={40} y={84} color="#a2d2ff" />
+      <Balloon x={70} y={70} color="#ffafcc" d={-0.9} />
+      <Balloon x={98} y={88} color="#bde0fe" d={-1.6} />
+      <rect y="255" width="400" height="45" fill="#ffe5ec" />
+
+      <rect x="282" y="150" width="6" height="110" fill="#b08968" />
+      <rect x="372" y="150" width="6" height="110" fill="#b08968" />
+      <rect x="276" y="146" width="108" height="7" rx="3" fill="#9c6644" />
+      <g transform="translate(330 153)">
+        <g className="sway-top">
+          <line x1="-26" y1="0" x2="-26" y2="62" stroke="#7f5539" strokeWidth="1.5" />
+          <line x1="26" y1="0" x2="26" y2="62" stroke="#7f5539" strokeWidth="1.5" />
+          <path d="M-36 62 Q0 96 36 62 Z" fill="#ffafcc" stroke="#e5989b" strokeWidth="2" />
+          <circle cx="-6" cy="66" r="6" fill="#c68642" />
+          <path d="M-2 64 Q10 60 20 66 Q10 74 -2 70 Z" fill="#a2d2ff" />
+        </g>
+      </g>
+
+      <Person x={50} y={266} s={0.85} outfit="#ffbe0b" trim="#d00000" skin="#8d5524" pose="clap" delay={0.3} />
+      <Person x={115} y={264} s={0.9} outfit="#4cc9f0" trim="#ff006e" skin="#a0662f" pose="offer" prop={banglePlate} />
+      <Person x={190} y={262} s={1.05} outfit="#ff70a6" trim="#ffd60a" skin="#c68642" pose="belly" prop={belly} />
+      <Person x={250} y={266} s={0.86} kind="kurta" outfit="#3a86ff" trim="#ffd60a" pants="#f8f9fa" skin="#8d5524" pose="clap" delay={0.15} />
+
+      {[[175, 150, "#ff70a6"], [205, 140, "#a2d2ff"], [160, 120, "#ff006e"], [220, 115, "#ffafcc"]].map(([x, y, c], i) => (
+        <Heart key={i} x={x} y={y} color={c} d={-i * 0.8} />
+      ))}
+    </Frame>
+  );
+}
+
+/* ── Get-together: friends around a dinner table ── */
+
+export function GetTogetherScene() {
+  const people = [
+    [70, "kurta", "#3a86ff", "#ffbe0b", "#8d5524", "wave"],
+    [125, "saree", "#ff006e", "#ffd60a", "#a0662f", "cheer"],
+    [180, "kurta", "#2a9d8f", "#e9c46a", "#c68642", "clap"],
+    [235, "saree", "#8338ec", "#ffd60a", "#8d5524", "glass"],
+    [290, "kurta", "#e76f51", "#ffd60a", "#b5733c", "clap"],
+    [345, "saree", "#06d6a0", "#ff006e", "#a0662f", "wave"]
+  ];
+  return (
+    <Frame id="gettogether" label="Get-together: six friends laugh, wave and cheer around a long dinner table with steaming dishes under string lights" sky={["#ffcdb2", "#e5989b"]}>
+      <Lights y={14} n={16} sag={16} colors={["#ffd60a", "#ff006e", "#4cc9f0", "#80ffdb"]} />
+      <rect y="250" width="400" height="50" fill="#b5838d" opacity="0.5" />
+      {people.map(([x, kind, outfit, trim, skin, pose], i) => (
+        <Person
+          key={x}
+          x={x}
+          y={262}
+          s={0.95}
+          kind={kind}
+          outfit={outfit}
+          trim={trim}
+          pants="#f8f9fa"
+          skin={skin}
+          pose={pose}
+          rItem={pose === "glass" ? glass : undefined}
+          delay={i * 0.15}
+        />
+      ))}
+      <rect x="40" y="212" width="320" height="10" rx="3" fill="#7f5539" />
+      <rect x="48" y="222" width="304" height="40" fill="#fefae0" />
+      <path d="M48 230 H352" stroke="#e63946" strokeWidth="3" opacity="0.6" />
+      {[90, 160, 240, 310].map((x, i) => (
+        <g key={x}>
+          <ellipse cx={x} cy="211" rx="16" ry="4" fill="#fff" stroke="#ced4da" />
+          <ellipse cx={x} cy="208" rx="9" ry="4" fill={["#f4a261", "#e9c46a", "#d62828", "#2a9d8f"][i]} />
+          <g transform={`translate(${x} 202)`}>
+            <path className="steam" style={{ animationDelay: `${-i * 0.6}s` }} d="M0 0 q3 -4 0 -8 q-3 -4 0 -8" stroke="#fff" strokeWidth="1.3" fill="none" />
+          </g>
+        </g>
+      ))}
+    </Frame>
+  );
+}
+
+/* ── Corporate party: annual day stage, speaker, trophy, audience ── */
+
+export function CorporateScene() {
+  return (
+    <Frame id="corporate" label="Corporate party: a speaker at the podium on an annual day stage under spotlights, with a trophy on stage and the audience clapping" sky={["#0b132b", "#1c2541"]}>
+      <defs>
+        <linearGradient id="corporate-banner" x1="0" x2="1">
+          <stop offset="0" stopColor="#7209b7" />
+          <stop offset="1" stopColor="#f72585" />
+        </linearGradient>
+      </defs>
+      <polygon points="10,0 40,0 220,170 150,170" fill="#ffd60a" opacity="0.14" className="blink" />
+      <polygon points="390,0 360,0 180,170 250,170" fill="#4cc9f0" opacity="0.14" className="blink" style={{ animationDelay: "-1.2s" }} />
+      <Firework x={50} y={50} color="#f72585" r={22} />
+      <Firework x={352} y={44} color="#ffd60a" delay={-1.3} r={22} />
+
+      <rect x="90" y="28" width="220" height="72" rx="8" fill="url(#corporate-banner)" />
+      <text x="200" y="70" textAnchor="middle" fontFamily="'Bebas Neue', Impact, sans-serif" fontSize="34" fill="#fff" letterSpacing="2">
+        ANNUAL DAY
+      </text>
+      <text x="200" y="89" textAnchor="middle" fontFamily="Poppins, sans-serif" fontSize="10" fontWeight="600" fill="#ffe5f1" letterSpacing="3">
+        &amp; AWARDS NIGHT
+      </text>
+
+      <rect x="40" y="170" width="320" height="14" fill="#3a506b" />
+      <rect x="40" y="184" width="320" height="18" fill="#1c2541" stroke="#3a506b" />
+      <Person x={200} y={170} s={0.8} kind="kurta" outfit="#f8f9fa" trim="#4361ee" pants="#212529" skin="#8d5524" pose="mic" rItem={mic} />
+      <rect x="188" y="140" width="24" height="30" rx="2" fill="#5c677d" />
+      <circle cx="200" cy="152" r="5" fill="#f72585" />
+
+      <g transform="translate(300 170)">
+        <circle cx="0" cy="-22" r="18" fill="#ffd60a" className="pulse" />
+        <path d="M-10 -34 H10 Q10 -18 0 -16 Q-10 -18 -10 -34 Z" fill="#ffd60a" />
+        <path d="M-10 -31 Q-17 -30 -14 -23 Q-12 -20 -8 -21 M10 -31 Q17 -30 14 -23 Q12 -20 8 -21" stroke="#ffd60a" strokeWidth="2" fill="none" />
+        <rect x="-2" y="-16" width="4" height="8" fill="#e9c46a" />
+        <rect x="-8" y="-8" width="16" height="6" rx="1" fill="#bc6c25" />
+      </g>
+
+      {[35, 100, 165, 235, 300, 365].map((x, i) => (
+        <Person
+          key={x}
+          x={x}
+          y={300}
+          s={0.9}
+          kind={i % 2 ? "saree" : "kurta"}
+          outfit={["#212529", "#4361ee", "#495057", "#f72585", "#343a40", "#06d6a0"][i]}
+          trim="#ffd60a"
+          pants="#212529"
+          skin={["#8d5524", "#a0662f", "#c68642", "#b5733c"][i % 4]}
+          pose="clap"
+          delay={i * 0.12}
+        />
       ))}
     </Frame>
   );
