@@ -1,6 +1,8 @@
-# Gurajala Nagalakshmi — Event Portfolio
+# Gurajala Nagalakshmi — Portfolio
 
-A responsive, party-inspired portfolio for Gurajala Nagalakshmi, an event operations and execution professional based in Hyderabad, India.
+Personal portfolio and online résumé for Gurajala Nagalakshmi, an event operations and execution professional in Hyderabad who is looking for full-time roles with event management companies.
+
+The page covers experience, skills, education and contact details. The "Résumé PDF" button prints the page with a print-optimised stylesheet, so recruiters can save it as a PDF.
 
 ## Run locally
 
@@ -16,4 +18,4 @@ npm run build
 npm run preview
 ```
 
-Built with React and Vite.
+Built with React and Vite. Deployed to Cloudflare Pages on every push to `main`.
