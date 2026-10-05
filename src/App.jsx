@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   Briefcase,
+  Baby,
   Building2,
   Cake,
   CalendarCheck,
@@ -9,17 +10,19 @@ import {
   ClipboardList,
   Download,
   Flower2,
+  Gem,
   GraduationCap,
   Heart,
   Languages,
   Mail,
+  Martini,
   MapPin,
   Megaphone,
   Menu,
   MessageCircle,
   Mic2,
   Moon,
-  Music,
+  PartyPopper,
   Phone,
   Sparkle,
   Speaker,
@@ -48,8 +51,8 @@ const CONTACT = {
 };
 
 const NAV = [
-  { id: "about", label: "About" },
   { id: "events", label: "Events" },
+  { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "skills", label: "Skills" },
   { id: "education", label: "Education" },
@@ -110,55 +113,64 @@ const EXPERIENCE = [
 const EVENT_TYPES = [
   {
     icon: Heart,
-    title: "Weddings",
-    text: "Muhurtham and reception days — mandapam setup, vendor timing, guest flow and keeping both families on schedule.",
+    title: "Marriage",
+    text: "Muhurtham to reception — mandapam setup, vendor timing, guest flow and keeping both families on schedule.",
     tags: ["Muhurtham", "Reception", "Mandapam setup"]
   },
   {
+    icon: Gem,
+    title: "Engagement",
+    text: "Ring ceremony stage, décor, photo moments and a smooth flow from the rituals to dinner.",
+    tags: ["Ring ceremony", "Stage décor"]
+  },
+  {
     icon: Flower2,
-    title: "Pre-wedding",
-    text: "Engagement, Haldi / Pelli Kuthuru, Mehendi and Sangeet — décor cues, music, ritual timing and photo moments.",
-    tags: ["Engagement", "Haldi", "Mehendi", "Sangeet"]
+    title: "Haldi, Mehendi & Sangeet",
+    text: "Pre-wedding mornings and nights — décor cues, ritual timing, music and dance-floor handovers.",
+    tags: ["Haldi", "Mehendi", "Sangeet"]
+  },
+  {
+    icon: Martini,
+    title: "Cocktail parties",
+    text: "Bar and lounge setup, DJ and lighting cues, guest lists and late-night logistics.",
+    tags: ["Bar & lounge", "DJ & lights"]
   },
   {
     icon: Cake,
-    title: "Birthdays & private parties",
-    text: "Theme décor, cake moments, games, playlists and return gifts handled so the hosts can enjoy their own party.",
-    tags: ["Theme parties", "Milestone birthdays"]
+    title: "Birthday parties",
+    text: "Theme décor, the cake moment, games, playlists and return gifts — from first birthdays to milestone 50ths.",
+    tags: ["Theme décor", "Milestone birthdays"]
   },
   {
-    icon: Building2,
-    title: "Corporate events & conferences",
-    text: "Venues, hotel RFQs, AV, registrations and a run-of-show that keeps every session on time.",
-    tags: ["Conferences", "Offsites", "Registrations"]
+    icon: Baby,
+    title: "Baby showers",
+    text: "Seemantham and modern baby showers — ritual setup, décor, games and comfort for the mom-to-be.",
+    tags: ["Seemantham", "Décor & games"]
   },
   {
-    icon: Music,
-    title: "Concerts & live shows",
-    text: "Stage and sound coordination, artist cues and safe crowd movement on the night.",
-    tags: ["Stage & sound", "Crowd flow"]
+    icon: Users,
+    title: "Get-togethers",
+    text: "Family reunions, alumni meets and house parties — venue, food, activities and timing sorted.",
+    tags: ["Reunions", "Alumni meets"]
   },
   {
-    icon: Megaphone,
-    title: "Exhibitions, launches & press meets",
-    text: "Brand activations, stall setups and media-day logistics from load-in to wrap.",
-    tags: ["Brand activations", "Press meets"]
+    icon: PartyPopper,
+    title: "Corporate parties",
+    text: "Annual days, team celebrations, award nights and offsites — venue, AV, registrations and run-of-show.",
+    tags: ["Annual day", "Award nights", "Offsites"]
   }
 ];
 
 const MARQUEE = [
-  "Weddings",
-  "Engagements",
+  "Marriage",
+  "Engagement",
   "Haldi & Mehendi",
   "Sangeet",
+  "Cocktail parties",
   "Birthday parties",
-  "Corporate events",
-  "Concerts",
-  "Conferences",
-  "Exhibitions",
-  "Brand activations",
-  "Press meets",
-  "Campus fests"
+  "Baby showers",
+  "Get-togethers",
+  "Corporate parties"
 ];
 
 const SKILLS = [
@@ -654,37 +666,12 @@ export default function App() {
           </div>
         </div>
 
-        {/* ── ABOUT · Sankranti ── */}
-        <FestivalSection id="about" side="left" festival="sankranti">
-          <SectionHead
-            eyebrow="About"
-            title="What I bring to an events team"
-            intro="I started by leading volunteer crews at college fests, moved into weddings and social events with Hyderabad event companies, and now work across corporate and live productions. I'm looking for a team where I can keep growing in operations and production."
-          />
-          <div className="grid gap-4">
-            {STRENGTHS.map(({ icon: Icon, title, text }, i) => {
-              const c = POP[i % POP.length];
-              return (
-                <article key={title} className={`card reveal flex gap-4 hover:-translate-y-1 ${c.hover}`}>
-                  <span className={`grid size-12 flex-none place-items-center rounded-2xl ${c.tile}`} aria-hidden="true">
-                    <Icon size={22} />
-                  </span>
-                  <div>
-                    <h3 className="text-lg font-semibold">{title}</h3>
-                    <p className="mt-1 text-[0.9375rem] text-muted">{text}</p>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </FestivalSection>
-
         {/* ── EVENTS · Telugu wedding ── */}
-        <FestivalSection id="events" alt side="right" festival="wedding">
+        <FestivalSection id="events" side="left" festival="wedding">
           <SectionHead
             eyebrow="Events"
             title="Events I can handle"
-            intro="From a family's haldi morning to a corporate conference — these are the kinds of events I've worked on and can run for your clients."
+            intro="Marriages, engagements, cocktail nights, birthdays, baby showers, get-togethers and corporate parties — the celebrations I can plan and run on the ground for your clients."
           />
           <div className="grid gap-4 sm:grid-cols-2">
             {EVENT_TYPES.map(({ icon: Icon, title, text, tags }, i) => {
@@ -703,6 +690,31 @@ export default function App() {
                       </li>
                     ))}
                   </ul>
+                </article>
+              );
+            })}
+          </div>
+        </FestivalSection>
+
+        {/* ── ABOUT · Sankranti ── */}
+        <FestivalSection id="about" alt side="right" festival="sankranti">
+          <SectionHead
+            eyebrow="About"
+            title="What I bring to an events team"
+            intro="I started by leading volunteer crews at college fests, moved into weddings and social events with Hyderabad event companies, and now work across corporate and live productions. I'm looking for a team where I can keep growing in operations and production."
+          />
+          <div className="grid gap-4">
+            {STRENGTHS.map(({ icon: Icon, title, text }, i) => {
+              const c = POP[i % POP.length];
+              return (
+                <article key={title} className={`card reveal flex gap-4 hover:-translate-y-1 ${c.hover}`}>
+                  <span className={`grid size-12 flex-none place-items-center rounded-2xl ${c.tile}`} aria-hidden="true">
+                    <Icon size={22} />
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-semibold">{title}</h3>
+                    <p className="mt-1 text-[0.9375rem] text-muted">{text}</p>
+                  </div>
                 </article>
               );
             })}
