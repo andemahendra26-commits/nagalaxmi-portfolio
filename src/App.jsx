@@ -3,20 +3,25 @@ import {
   ArrowUpRight,
   Briefcase,
   Building2,
+  Cake,
   CalendarCheck,
   ChevronDown,
   ClipboardList,
   Download,
+  Flower2,
   GraduationCap,
+  Heart,
   Languages,
   Mail,
   MapPin,
   Megaphone,
   Menu,
   MessageCircle,
-  Moon,
   Mic2,
+  Moon,
+  Music,
   Phone,
+  Sparkle,
   Speaker,
   Sun,
   Users,
@@ -24,6 +29,14 @@ import {
 } from "lucide-react";
 import portraitJpg from "./assets/nagalakshmi.jpg";
 import portraitWebp from "./assets/nagalakshmi.webp";
+import {
+  BathukammaScene,
+  BonaluScene,
+  KolatamScene,
+  SankrantiScene,
+  UgadiScene,
+  WeddingScene
+} from "./scenes.jsx";
 
 const CONTACT = {
   email: "gurujalaloke@gmail.com",
@@ -36,6 +49,7 @@ const CONTACT = {
 
 const NAV = [
   { id: "about", label: "About" },
+  { id: "events", label: "Events" },
   { id: "experience", label: "Experience" },
   { id: "skills", label: "Skills" },
   { id: "education", label: "Education" },
@@ -93,14 +107,57 @@ const EXPERIENCE = [
   }
 ];
 
-const EVENT_FORMATS = [
-  "Corporate events",
-  "Live concerts",
+const EVENT_TYPES = [
+  {
+    icon: Heart,
+    title: "Weddings",
+    text: "Muhurtham and reception days — mandapam setup, vendor timing, guest flow and keeping both families on schedule.",
+    tags: ["Muhurtham", "Reception", "Mandapam setup"]
+  },
+  {
+    icon: Flower2,
+    title: "Pre-wedding",
+    text: "Engagement, Haldi / Pelli Kuthuru, Mehendi and Sangeet — décor cues, music, ritual timing and photo moments.",
+    tags: ["Engagement", "Haldi", "Mehendi", "Sangeet"]
+  },
+  {
+    icon: Cake,
+    title: "Birthdays & private parties",
+    text: "Theme décor, cake moments, games, playlists and return gifts handled so the hosts can enjoy their own party.",
+    tags: ["Theme parties", "Milestone birthdays"]
+  },
+  {
+    icon: Building2,
+    title: "Corporate events & conferences",
+    text: "Venues, hotel RFQs, AV, registrations and a run-of-show that keeps every session on time.",
+    tags: ["Conferences", "Offsites", "Registrations"]
+  },
+  {
+    icon: Music,
+    title: "Concerts & live shows",
+    text: "Stage and sound coordination, artist cues and safe crowd movement on the night.",
+    tags: ["Stage & sound", "Crowd flow"]
+  },
+  {
+    icon: Megaphone,
+    title: "Exhibitions, launches & press meets",
+    text: "Brand activations, stall setups and media-day logistics from load-in to wrap.",
+    tags: ["Brand activations", "Press meets"]
+  }
+];
+
+const MARQUEE = [
   "Weddings",
+  "Engagements",
+  "Haldi & Mehendi",
+  "Sangeet",
+  "Birthday parties",
+  "Corporate events",
+  "Concerts",
   "Conferences",
   "Exhibitions",
-  "Press meets",
   "Brand activations",
+  "Press meets",
   "Campus fests"
 ];
 
@@ -174,6 +231,94 @@ const ROLES = [
   "Event Marketing Executive"
 ];
 
+/* Festival scene for each section — facts from Telangana Tourism, Incredible India and Wikipedia */
+const FESTIVALS = {
+  sankranti: {
+    Scene: SankrantiScene,
+    name: "Sankranti",
+    place: "AP & Telangana · January",
+    text: "Three days of Bhogi bonfires, muggulu at every doorstep and kites over every terrace.",
+    dot: "bg-orange"
+  },
+  wedding: {
+    Scene: WeddingScene,
+    name: "Pelli · Talambralu",
+    place: "Telugu wedding",
+    text: "Under the mandapam, the couple showers each other with turmeric rice while the family cheers.",
+    dot: "bg-pink"
+  },
+  bathukamma: {
+    Scene: BathukammaScene,
+    name: "Bathukamma",
+    place: "Telangana · Sept–Oct",
+    text: "Women circle a seven-layer stack of tangedu, gunuka and banti flowers, clapping to Uyyala patalu.",
+    dot: "bg-purple"
+  },
+  bonalu: {
+    Scene: BonaluScene,
+    name: "Bonalu",
+    place: "Telangana · Ashada",
+    text: "Women carry bonam pots dressed with neem leaves and a lit lamp, led by a dancing Pothuraju and dappu drums.",
+    dot: "bg-yellow"
+  },
+  ugadi: {
+    Scene: UgadiScene,
+    name: "Ugadi",
+    place: "Telugu New Year · Mar–Apr",
+    text: "Mango-leaf toranams, fresh muggulu and pachadi with six tastes for every kind of year ahead.",
+    dot: "bg-teal"
+  },
+  kolatam: {
+    Scene: KolatamScene,
+    name: "Kolatam",
+    place: "AP & Telangana",
+    text: "Dancers strike painted sticks in rhythm, moving in circles to folk songs — here under festival fireworks.",
+    dot: "bg-pink"
+  }
+};
+
+/* Accent colour rotation for cards — full class strings so Tailwind can see them */
+const POP = [
+  {
+    text: "text-pink",
+    bg: "bg-pink",
+    tile: "bg-pink/15 text-pink",
+    hover: "hover:border-pink hover:shadow-[0_22px_50px_-26px_var(--pink)]",
+    check: "before:border-pink",
+    dot: "before:bg-pink",
+    bar: "before:bg-pink"
+  },
+  {
+    text: "text-purple",
+    bg: "bg-purple",
+    tile: "bg-purple/15 text-purple",
+    hover: "hover:border-purple hover:shadow-[0_22px_50px_-26px_var(--purple)]",
+    check: "before:border-purple",
+    dot: "before:bg-purple",
+    bar: "before:bg-purple"
+  },
+  {
+    text: "text-orange",
+    bg: "bg-orange",
+    tile: "bg-orange/15 text-orange",
+    hover: "hover:border-orange hover:shadow-[0_22px_50px_-26px_var(--orange)]",
+    check: "before:border-orange",
+    dot: "before:bg-orange",
+    bar: "before:bg-orange"
+  },
+  {
+    text: "text-teal",
+    bg: "bg-teal",
+    tile: "bg-teal/15 text-teal",
+    hover: "hover:border-teal hover:shadow-[0_22px_50px_-26px_var(--teal)]",
+    check: "before:border-teal",
+    dot: "before:bg-teal",
+    bar: "before:bg-teal"
+  }
+];
+
+const PANEL_ICON = ["text-[#f472b6]", "text-[#a78bfa]", "text-[#fb923c]", "text-[#2dd4bf]"];
+
 function LinkedinIcon({ size = 18 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -184,18 +329,45 @@ function LinkedinIcon({ size = 18 }) {
 
 function SectionHead({ eyebrow, title, intro }) {
   return (
-    <div className="reveal mb-10 max-w-[680px] print:mb-2.5">
-      <p className="eyebrow">{eyebrow}</p>
-      <h2 className="text-[clamp(1.875rem,4.5vw,2.75rem)] leading-tight print:text-[16pt]">{title}</h2>
+    <div className="reveal mb-8 print:mb-2.5">
+      <p className="eyebrow">
+        <Sparkle size={12} aria-hidden="true" />
+        {eyebrow}
+      </p>
+      <h2 className="text-[clamp(2.75rem,7vw,4.25rem)] leading-[0.95] print:text-[18pt]">{title}</h2>
       {intro && <p className="mt-4 text-[1.0625rem] text-ink-2">{intro}</p>}
     </div>
   );
 }
 
-function Section({ id, alt, children, className = "" }) {
+function FestivalScene({ Scene, name, place, text, dot }) {
+  return (
+    <figure className="scene reveal overflow-hidden rounded-[28px] border border-line bg-surface lg:sticky lg:top-24 print:hidden">
+      <Scene />
+      <figcaption className="flex items-start gap-3 p-5">
+        <span aria-hidden="true" className={`mt-2 size-2.5 flex-none rounded-full ${dot}`} />
+        <div>
+          <p className="leading-none">
+            <span className="font-display text-2xl tracking-wide">{name}</span>
+            <span className="ml-2 text-xs font-semibold tracking-[0.14em] text-muted uppercase">{place}</span>
+          </p>
+          <p className="mt-1.5 text-sm text-muted">{text}</p>
+        </div>
+      </figcaption>
+    </figure>
+  );
+}
+
+/* Alternating layout: festival scene on one side, details on the other */
+function FestivalSection({ id, alt, side = "left", festival, children }) {
   return (
     <section id={id} className={`py-18 nav:py-26 print:py-3 ${alt ? "bg-bg-alt" : ""}`}>
-      <div className={`container-page ${className}`}>{children}</div>
+      <div className="container-page grid grid-cols-[minmax(0,1fr)] items-start gap-10 lg:grid-cols-2 lg:gap-14 print:block">
+        <div className={side === "right" ? "lg:order-2" : ""}>
+          <FestivalScene {...FESTIVALS[festival]} />
+        </div>
+        <div className="min-w-0">{children}</div>
+      </div>
     </section>
   );
 }
@@ -204,7 +376,7 @@ function Monogram() {
   return (
     <span
       aria-hidden="true"
-      className="grid size-[38px] flex-none place-items-center rounded-full bg-ink font-serif text-sm font-semibold tracking-wide text-bg"
+      className="grid size-[38px] flex-none place-items-center rounded-full bg-linear-to-br from-[#f472b6] to-[#fb923c] font-display text-lg tracking-wide text-on-pop"
     >
       GN
     </span>
@@ -212,8 +384,8 @@ function Monogram() {
 }
 
 function getInitialTheme() {
-  if (typeof document === "undefined") return "light";
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  if (typeof document === "undefined") return "dark";
+  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
 export default function App() {
@@ -257,9 +429,16 @@ export default function App() {
     );
     document.querySelectorAll("section[id]").forEach((s) => spy.observe(s));
 
+    // Pause festival animations while they're off screen
+    const scenes = new IntersectionObserver((entries) =>
+      entries.forEach((e) => e.target.classList.toggle("is-paused", !e.isIntersecting))
+    );
+    document.querySelectorAll(".scene").forEach((s) => scenes.observe(s));
+
     return () => {
       reveal.disconnect();
       spy.disconnect();
+      scenes.disconnect();
     };
   }, []);
 
@@ -281,24 +460,24 @@ export default function App() {
         Skip to content
       </a>
 
-      <header className="sticky top-0 z-50 border-b border-line bg-bg/88 backdrop-blur-md backdrop-saturate-150 print:hidden">
-        <div className="container-page flex h-[68px] items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md backdrop-saturate-150 print:hidden">
+        <div className="container-page flex h-[68px] max-w-[1280px] items-center justify-between gap-4">
           <a href="#top" className="flex min-w-0 items-center gap-3" aria-label="Gurajala Nagalakshmi, back to top">
             <Monogram />
             <span className="flex min-w-0 flex-col leading-tight">
               <strong className="truncate text-[0.9375rem]">Gurajala Nagalakshmi</strong>
-              <span className="text-xs text-muted">Event Operations · Hyderabad</span>
+              <span className="truncate text-xs text-muted">Event Operations · Hyderabad</span>
             </span>
           </a>
 
-          <nav className="hidden gap-1 nav:flex" aria-label="Primary">
+          <nav className="hidden gap-1 lg:flex" aria-label="Primary">
             {NAV.map((n) => (
               <a
                 key={n.id}
                 href={`#${n.id}`}
                 aria-current={active === n.id ? "true" : undefined}
                 className={`rounded-full px-3 py-2 text-[0.9rem] font-medium transition-colors duration-150 hover:text-ink ${
-                  active === n.id ? "bg-bg-alt text-ink" : "text-muted"
+                  active === n.id ? "bg-surface text-pink" : "text-muted"
                 }`}
               >
                 {n.label}
@@ -312,11 +491,11 @@ export default function App() {
               onClick={toggleTheme}
               aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
               title={isDark ? "Light theme" : "Dark theme"}
-              className="grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-ink"
+              className="grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-pink"
             >
               {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
             </button>
-            <button type="button" className="btn btn-ghost btn-sm hidden nav:inline-flex" onClick={() => window.print()}>
+            <button type="button" className="btn btn-ghost btn-sm hidden xl:inline-flex" onClick={() => window.print()}>
               <Download size={15} aria-hidden="true" />
               <span>Resume PDF</span>
             </button>
@@ -326,7 +505,7 @@ export default function App() {
             </a>
             <button
               type="button"
-              className="grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-ink nav:hidden"
+              className="grid size-11 cursor-pointer place-items-center rounded-full border border-line bg-surface text-ink lg:hidden"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav"
@@ -340,8 +519,8 @@ export default function App() {
         <nav
           id="mobile-nav"
           aria-label="Mobile"
-          className={`grid gap-1 overflow-hidden px-4 transition-[max-height,padding] duration-300 ease-out-soft nav:hidden ${
-            menuOpen ? "visible max-h-[480px] border-t border-line pt-3 pb-5" : "invisible max-h-0"
+          className={`grid gap-1 overflow-hidden px-4 transition-[max-height,padding] duration-300 ease-out-soft lg:hidden ${
+            menuOpen ? "visible max-h-[560px] border-t border-line pt-3 pb-5" : "invisible max-h-0"
           }`}
         >
           {NAV.map((n) => (
@@ -370,7 +549,7 @@ export default function App() {
 
       <main id="main">
         {/* ── HERO ── */}
-        <section id="top" className="pt-14 pb-18 nav:pt-24 nav:pb-28 print:py-3">
+        <section id="top" className="hero-classic pt-14 pb-18 nav:pt-24 nav:pb-28 print:py-3">
           <div className="container-page grid grid-cols-[minmax(0,1fr)] items-center gap-10 md:grid-cols-[240px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)_300px] lg:gap-10 xl:grid-cols-[290px_minmax(0,1fr)_320px] xl:gap-12 print:grid-cols-[1.3fr_1fr] print:gap-6">
             <picture className="reveal mx-auto block w-full max-w-[340px] md:max-w-none print:hidden">
               <source srcSet={portraitWebp} type="image/webp" />
@@ -457,185 +636,240 @@ export default function App() {
           </div>
         </section>
 
-        {/* ── ABOUT ── */}
-        <Section id="about">
+        {/* ── MARQUEE ── */}
+        <div aria-hidden="true" className="overflow-hidden py-6 print:hidden">
+          <div className="-mx-[5%] w-[110%] -rotate-2 bg-linear-to-r from-[#f472b6] via-[#a78bfa] via-50% to-[#fb923c] py-3">
+            <div className="marquee-track flex w-max">
+              {[0, 1].map((k) => (
+                <div key={k} className="flex items-center">
+                  {MARQUEE.map((m) => (
+                    <span key={m} className="flex items-center gap-5 px-5 font-display text-2xl tracking-wider text-on-pop">
+                      {m}
+                      <Sparkle size={16} />
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── ABOUT · Sankranti ── */}
+        <FestivalSection id="about" side="left" festival="sankranti">
           <SectionHead
             eyebrow="About"
             title="What I bring to an events team"
             intro="I started by leading volunteer crews at college fests, moved into weddings and social events with Hyderabad event companies, and now work across corporate and live productions. I'm looking for a team where I can keep growing in operations and production."
           />
-          <div className="grid gap-4 md:grid-cols-3 md:gap-5">
-            {STRENGTHS.map(({ icon: Icon, title, text }) => (
-              <article key={title} className="card reveal">
-                <span className="icon-tile" aria-hidden="true">
-                  <Icon size={20} />
-                </span>
-                <h3 className="mt-4 mb-2 text-lg font-semibold">{title}</h3>
-                <p className="text-[0.9375rem] text-muted">{text}</p>
-              </article>
-            ))}
+          <div className="grid gap-4">
+            {STRENGTHS.map(({ icon: Icon, title, text }, i) => {
+              const c = POP[i % POP.length];
+              return (
+                <article key={title} className={`card reveal flex gap-4 hover:-translate-y-1 ${c.hover}`}>
+                  <span className={`grid size-12 flex-none place-items-center rounded-2xl ${c.tile}`} aria-hidden="true">
+                    <Icon size={22} />
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-semibold">{title}</h3>
+                    <p className="mt-1 text-[0.9375rem] text-muted">{text}</p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
+        </FestivalSection>
 
-          <div className="reveal mt-10">
-            <p className="mb-3.5 font-semibold">Event formats I've worked on</p>
-            <ul className="flex flex-wrap gap-2">
-              {EVENT_FORMATS.map((f) => (
-                <li key={f} className="chip">{f}</li>
-              ))}
-            </ul>
-          </div>
-        </Section>
-
-        {/* ── EXPERIENCE ── */}
-        <Section id="experience" alt>
-          <SectionHead eyebrow="Experience" title="Where I've worked" />
-          <ol className="relative grid grid-cols-[minmax(0,1fr)] gap-6 md:before:absolute md:before:inset-y-2 md:before:left-[200px] md:before:w-px md:before:bg-line print:before:hidden">
-            {EXPERIENCE.map((job) => (
-              <li
-                key={job.company}
-                className="reveal grid grid-cols-[minmax(0,1fr)] gap-2.5 md:grid-cols-[180px_minmax(0,1fr)] md:gap-10 print:grid-cols-1 print:gap-1"
-              >
-                <div
-                  className={`flex flex-wrap items-center gap-2.5 md:relative md:flex-col md:items-start md:pt-[26px] md:after:absolute md:after:top-[30px] md:after:-right-[26px] md:after:size-[11px] md:after:rounded-full md:after:border-2 md:after:border-accent print:flex-row print:pt-0 print:after:hidden ${
-                    job.current ? "md:after:bg-accent" : "md:after:bg-bg-alt"
-                  }`}
-                >
-                  <span className="text-sm font-semibold text-muted">{job.period}</span>
-                  {job.current && (
-                    <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-on-accent">Current</span>
-                  )}
-                </div>
-                <div
-                  className={`card md:p-7 ${
-                    job.current ? "border-[color-mix(in_srgb,var(--accent)_55%,var(--line))]" : ""
-                  }`}
-                >
-                  <h3 className="text-xl font-semibold">{job.role}</h3>
-                  <p className="mt-1 text-[0.9375rem] font-semibold text-accent">
-                    {job.company} <span aria-hidden="true">·</span> {job.place}
-                  </p>
-                  <ul className="mt-3.5 grid gap-2">
-                    {job.points.map((p) => (
-                      <li
-                        key={p}
-                        className="relative pl-[18px] text-[0.9375rem] text-ink-2 before:absolute before:top-[0.65em] before:left-0.5 before:size-1.5 before:rounded-full before:bg-accent"
-                      >
-                        {p}
+        {/* ── EVENTS · Telugu wedding ── */}
+        <FestivalSection id="events" alt side="right" festival="wedding">
+          <SectionHead
+            eyebrow="Events"
+            title="Events I can handle"
+            intro="From a family's haldi morning to a corporate conference — these are the kinds of events I've worked on and can run for your clients."
+          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            {EVENT_TYPES.map(({ icon: Icon, title, text, tags }, i) => {
+              const c = POP[i % POP.length];
+              return (
+                <article key={title} className={`card reveal p-5 hover:-translate-y-1 ${c.hover}`}>
+                  <span className={`grid size-11 place-items-center rounded-2xl ${c.tile}`} aria-hidden="true">
+                    <Icon size={20} />
+                  </span>
+                  <h3 className="mt-3 text-[1.0625rem] font-semibold">{title}</h3>
+                  <p className="mt-1 text-sm text-muted">{text}</p>
+                  <ul className="mt-3 flex flex-wrap gap-1.5" aria-label={`${title} examples`}>
+                    {tags.map((t) => (
+                      <li key={t} className={`rounded-full bg-bg-alt px-2.5 py-1 text-xs font-medium ${c.text}`}>
+                        {t}
                       </li>
                     ))}
                   </ul>
-                  <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Focus areas">
-                    {job.tags.map((t) => (
-                      <li key={t} className="chip bg-bg-alt px-2.5 py-1 text-[0.8rem]">{t}</li>
+                </article>
+              );
+            })}
+          </div>
+        </FestivalSection>
+
+        {/* ── EXPERIENCE · Bathukamma ── */}
+        <FestivalSection id="experience" side="left" festival="bathukamma">
+          <SectionHead eyebrow="Run of show" title="Where I've worked" />
+          <ol className="relative grid gap-5 pl-8 before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-0.5 before:rounded-full before:bg-linear-to-b before:from-pink before:via-purple before:to-orange print:pl-0 print:before:hidden">
+            {EXPERIENCE.map((job, i) => {
+              const c = POP[i % POP.length];
+              return (
+                <li key={job.company} className="reveal relative">
+                  <span
+                    aria-hidden="true"
+                    className={`absolute top-6 -left-[27px] size-3.5 rounded-full ring-4 ring-bg ${c.bg} print:hidden`}
+                  />
+                  <div className={`card p-5 hover:-translate-y-1 ${job.current ? "gradient-border" : c.hover}`}>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`font-display text-xl leading-none tracking-wide ${c.text}`}>{job.period}</span>
+                      {job.current && (
+                        <span className="rounded-full bg-linear-to-r from-[#f472b6] to-[#fb923c] px-2.5 py-0.5 text-xs font-semibold text-on-pop">
+                          Current
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mt-2 text-lg font-semibold">{job.role}</h3>
+                    <p className="text-sm font-semibold text-muted">
+                      {job.company} <span aria-hidden="true">·</span> {job.place}
+                    </p>
+                    <ul className="mt-3 grid gap-1.5">
+                      {job.points.map((p) => (
+                        <li
+                          key={p}
+                          className={`relative pl-[18px] text-[0.9375rem] text-ink-2 before:absolute before:top-[0.65em] before:left-0.5 before:size-1.5 before:rounded-full ${c.dot}`}
+                        >
+                          {p}
+                        </li>
+                      ))}
+                    </ul>
+                    <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Focus areas">
+                      {job.tags.map((t) => (
+                        <li key={t} className="chip bg-bg-alt px-2.5 py-1 text-xs">
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </FestivalSection>
+
+        {/* ── SKILLS · Bonalu ── */}
+        <FestivalSection id="skills" alt side="right" festival="bonalu">
+          <SectionHead eyebrow="Skills" title="What I can take off your plate" />
+          <div className="grid gap-4 sm:grid-cols-2">
+            {SKILLS.map(({ icon: Icon, title, items }, i) => {
+              const c = POP[i % POP.length];
+              return (
+                <article
+                  key={title}
+                  className={`card reveal relative overflow-hidden p-5 before:absolute before:inset-x-0 before:top-0 before:h-1 hover:-translate-y-1 ${c.bar} ${c.hover}`}
+                >
+                  <div className="mb-3 flex items-center gap-3">
+                    <span className={`grid size-10 flex-none place-items-center rounded-xl ${c.tile}`} aria-hidden="true">
+                      <Icon size={19} />
+                    </span>
+                    <h3 className="text-[1.0625rem] font-semibold">{title}</h3>
+                  </div>
+                  <ul className="grid gap-2">
+                    {items.map((item) => (
+                      <li
+                        key={item}
+                        className={`relative pl-6 text-sm text-ink-2 before:absolute before:top-[0.35em] before:left-0 before:h-2 before:w-3.5 before:-rotate-45 before:border-b-2 before:border-l-2 ${c.check}`}
+                      >
+                        {item}
+                      </li>
                     ))}
                   </ul>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Section>
-
-        {/* ── SKILLS ── */}
-        <Section id="skills">
-          <SectionHead eyebrow="Skills" title="What I can take off your plate" />
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-            {SKILLS.map(({ icon: Icon, title, items }) => (
-              <article key={title} className="card reveal">
-                <div className="mb-4 flex items-center gap-3.5">
-                  <span className="icon-tile" aria-hidden="true">
-                    <Icon size={20} />
-                  </span>
-                  <h3 className="text-lg font-semibold">{title}</h3>
-                </div>
-                <ul className="grid gap-2.5">
-                  {items.map((i) => (
-                    <li
-                      key={i}
-                      className="relative pl-[26px] text-[0.9375rem] text-ink-2 before:absolute before:top-[0.35em] before:left-0 before:h-2 before:w-3.5 before:-rotate-45 before:border-b-2 before:border-l-2 before:border-accent"
-                    >
-                      {i}
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
-        </Section>
+        </FestivalSection>
 
-        {/* ── EDUCATION ── */}
-        <Section id="education" alt className="grid gap-2 nav:grid-cols-[1fr_1.6fr] nav:items-start nav:gap-12">
+        {/* ── EDUCATION · Ugadi ── */}
+        <FestivalSection id="education" side="left" festival="ugadi">
           <SectionHead eyebrow="Education" title="Engineering foundation" />
-          <article className="card reveal flex items-start gap-4.5">
-            <span className="icon-tile" aria-hidden="true">
-              <GraduationCap size={20} />
+          <article className="card gradient-border reveal flex items-start gap-4">
+            <span className="grid size-12 flex-none place-items-center rounded-2xl bg-teal/15 text-teal" aria-hidden="true">
+              <GraduationCap size={22} />
             </span>
             <div>
               <h3 className="text-[1.1875rem] font-semibold">B.Tech, Electronics &amp; Communication Engineering</h3>
-              <p className="mt-1 text-[0.9375rem] font-semibold text-accent">
+              <p className="mt-1 text-[0.9375rem] font-semibold text-teal">
                 Siddhartha Institute of Engineering &amp; Technology (SIET), Hyderabad
               </p>
-              <p className="mt-1.5 mb-3 text-sm font-semibold text-muted">2021 — 2025 · CGPA 7.2</p>
+              <p className="mt-1.5 mb-3 font-display text-xl tracking-wide text-muted">2021 — 2025 · CGPA 7.2</p>
               <p className="text-[0.9375rem] text-ink-2">
                 The technical side of my degree — audio signals, AV systems and electrical load — is what lets me work
                 confidently alongside sound, lighting and stage crews.
               </p>
             </div>
           </article>
-        </Section>
+        </FestivalSection>
 
-        {/* ── CONTACT ── */}
-        <Section id="contact">
-          <div className="reveal grid gap-8 rounded-3xl bg-panel px-5 py-8 text-on-panel nav:grid-cols-[1.1fr_1fr] nav:items-center nav:gap-14 nav:p-14 print:grid-cols-2 print:p-0">
-            <div>
-              <p className="eyebrow text-panel-accent">Hiring?</p>
-              <h2 className="text-[clamp(1.875rem,4.5vw,2.5rem)] leading-tight text-on-panel">
-                Let's talk about a role on your events team.
+        {/* ── CONTACT · Kolatam ── */}
+        <FestivalSection id="contact" alt side="right" festival="kolatam">
+          <div className="reveal relative overflow-hidden rounded-[28px] bg-panel p-7 text-on-panel sm:p-9 print:p-0">
+            <span aria-hidden="true" className="spot -top-24 -right-24 size-64 bg-[#f472b6] print:hidden" />
+            <span aria-hidden="true" className="spot -bottom-24 -left-24 size-64 bg-[#a78bfa] print:hidden" style={{ animationDelay: "-6s" }} />
+            <div className="relative">
+              <p className="eyebrow">
+                <Sparkle size={12} aria-hidden="true" />
+                Hiring?
+              </p>
+              <h2 className="text-[clamp(2.5rem,6vw,3.75rem)] leading-[0.95] text-on-panel">
+                Let's talk about a role on your events team
               </h2>
-              <p className="mt-4 mb-6 text-[1.0625rem] text-on-panel-muted">
+              <p className="mt-4 mb-5 text-[1.0625rem] text-on-panel-muted">
                 I'm open to full-time positions in Hyderabad and happy to share references or a detailed resume.
               </p>
-              <ul className="flex flex-wrap gap-2" aria-label="Roles I'm interested in">
+              <ul className="mb-7 flex flex-wrap gap-2" aria-label="Roles I'm interested in">
                 {ROLES.map((r) => (
                   <li key={r} className="chip border-white/20 bg-transparent text-on-panel print:border-line">
                     {r}
                   </li>
                 ))}
               </ul>
-            </div>
 
-            <ul className="grid gap-2.5">
-              {[
-                { href: `mailto:${CONTACT.email}`, icon: <Mail size={18} aria-hidden="true" />, label: "Email", value: CONTACT.email },
-                { href: CONTACT.phoneHref, icon: <Phone size={18} aria-hidden="true" />, label: "Phone", value: CONTACT.phone },
-                { href: CONTACT.linkedin, icon: <LinkedinIcon size={18} />, label: "LinkedIn", value: CONTACT.linkedinHandle, external: true },
-                { href: CONTACT.whatsapp, icon: <MessageCircle size={18} aria-hidden="true" />, label: "WhatsApp", value: "Message me", external: true }
-              ].map((c) => (
-                <li key={c.label}>
-                  <a
-                    href={c.href}
-                    {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
-                    className="flex min-h-16 items-center gap-3.5 rounded-2xl border border-white/12 bg-white/6 px-4.5 py-3 text-on-panel transition-colors duration-200 hover:border-panel-accent hover:bg-white/12 focus-visible:outline-panel-accent print:min-h-0 print:border-line print:bg-transparent"
-                  >
-                    <span className="flex-none text-panel-accent">{c.icon}</span>
-                    <span className="min-w-0 flex-1 font-semibold wrap-anywhere">
-                      <small className="block text-xs font-medium tracking-[0.08em] text-on-panel-muted uppercase">
-                        {c.label}
-                      </small>
-                      {c.value}
-                    </span>
-                    <ArrowUpRight size={16} aria-hidden="true" className="flex-none opacity-60 print:hidden" />
-                  </a>
-                </li>
-              ))}
-            </ul>
+              <ul className="grid gap-2.5">
+                {[
+                  { href: `mailto:${CONTACT.email}`, icon: <Mail size={18} aria-hidden="true" />, label: "Email", value: CONTACT.email },
+                  { href: CONTACT.phoneHref, icon: <Phone size={18} aria-hidden="true" />, label: "Phone", value: CONTACT.phone },
+                  { href: CONTACT.linkedin, icon: <LinkedinIcon size={18} />, label: "LinkedIn", value: CONTACT.linkedinHandle, external: true },
+                  { href: CONTACT.whatsapp, icon: <MessageCircle size={18} aria-hidden="true" />, label: "WhatsApp", value: "Message me", external: true }
+                ].map((c, i) => (
+                  <li key={c.label}>
+                    <a
+                      href={c.href}
+                      {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                      className="flex min-h-16 items-center gap-3.5 rounded-2xl border border-white/12 bg-white/6 px-4.5 py-3 text-on-panel transition-[background-color,border-color,translate] duration-200 hover:-translate-y-0.5 hover:border-[#f472b6] hover:bg-white/12 focus-visible:outline-[#f472b6] print:min-h-0 print:border-line print:bg-transparent"
+                    >
+                      <span className={`flex-none ${PANEL_ICON[i]}`}>{c.icon}</span>
+                      <span className="min-w-0 flex-1 font-semibold wrap-anywhere">
+                        <small className="block text-xs font-medium tracking-[0.08em] text-on-panel-muted uppercase">
+                          {c.label}
+                        </small>
+                        {c.value}
+                      </span>
+                      <ArrowUpRight size={16} aria-hidden="true" className="flex-none opacity-60 print:hidden" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </Section>
+        </FestivalSection>
       </main>
 
       <footer className="border-t border-line py-7 text-sm text-muted print:hidden">
         <div className="container-page flex flex-wrap justify-between gap-2">
-          <p>© {new Date().getFullYear()} Gurajala Nagalakshmi</p>
-          <p>Event Operations &amp; Execution · Hyderabad, India</p>
+          <p>© {new Date().getFullYear()} Gurajala Nagalakshmi · Let's make the next one unforgettable.</p>
+          <p>Scenes: Sankranti · Pelli · Bathukamma · Bonalu · Ugadi · Kolatam</p>
         </div>
       </footer>
     </>
